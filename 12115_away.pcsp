@@ -35,8 +35,8 @@ enum {SP, LP, LS, FI, VO, HD};
 // 1 means there is a player in that position
 // 0 means there is no player in that position
 var atkKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
-var atkDefPos = [-1(6), 1, 0, 1, 0, 1, 0, 1, -1(6)];
-var atkMidPos = [-1(6), 0, 1, 0, 1, 0, 1, 0, -1(6)];
+var atkDefPos = [-1(6), 1, 1, 1, 0, 1, 0, 1, -1(6)];
+var atkMidPos = [-1(6), 1, 0, 1, 0, 1, 0, 1, -1(6)];
 var atkForPos = [-1(6), 0, 1, 0, 1, 0, 1, 0, -1(6)];
 var defKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
 
@@ -46,13 +46,15 @@ var defKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
 
 // For example keepers can only ShortPass or LongPass
 // Here 64, 64 represents the FIFA ShortPass and LongPass ratings for this particular player
-AtkKep = [pos[C] == 1]Kep_1(64, 64, C);
-
+AtkKep = [pos[C] == 1]Kep_1(64, 64, C); //Goalkeeping kicking? Guzan has this
+ 
+ //36,27,19
+ //40,39,25
+ 
 // Here for the defenders, the first 3 parameters are with respect to the ShortPass, LongPass, and prob. to lose the ball respectively 
 // The prob. to lose the ball for the attacking team's defenders was calculated based on the defending team forward's player ratings 
 // In particular, the probability to lose the ball was a weighted combination of the standing tackle, sliding tackle, and interception FIFA player ratings of the forwards
-AtkDef = [pos[R] == 1]Def(73, 71, 38, R) [] [pos[CR] == 1]Def(68, 63, 38, CR) [] [pos[CL] == 1]Def(68, 63, 38, CL) [] [pos[L] == 1]Def(72, 59, 38, L);
-
+AtkDef = [pos[R] == 1]Def(73, 71, 38, R) [] [pos[CR] == 1]Def(68, 63, 38, CR) [] [pos[CL] == 1]Def(68, 63, 38, CL) [] [pos[L] == 1]Def(72, 59, 38, L); //Attacking short passing, Skill long passing, 
 // Similar to defenders, midfielders and forwards have their own specific parameters
 // See their processes below for more information on what those parameters are
 // The prob. to lose for the attacking team's midfielders is based on the defending team's midfielders
@@ -62,7 +64,7 @@ AtkFor = [pos[RL] == 1]For(77, 75, 74, 77, 75, RL) [] [pos[C] == 1]For(75, 73, 6
 
 ///////////// HOME TEAM PLAYERS (Defending Team) /////////////
 // Home team defenders, midfielders and forwards are already implicitly "defending" via the prob. to lose the ball parameter
-DefKep = [pos[C] == 1]Kep_2(72, C);
+DefKep = [pos[C] == 1]Kep_2(72, C); //Goal keeping handling? Boruc has this
 
 ///////////// Individual Positions /////////////
 // There is a guard to every action (e.g., shortPass) a player can take
@@ -72,21 +74,49 @@ DefKep = [pos[C] == 1]Kep_2(72, C);
 // The eligible players are updated with UpdatePos
 
 Kep_1(i, j, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1]shortPass -> pcase {
-	i: pass -> UpdatePos(p, SP); AtkDef
+	i: forwardPass -> UpdatePos(p, SP); AtkDef
 	100-i: intercepted{danger = 5;} -> Skip
 } [] [atkDefPos[p-6] == 1 || atkDefPos[p-5] == 1 || atkDefPos[p-4] == 1 || atkDefPos[p-3] == 1 || atkDefPos[p+3] == 1 || atkDefPos[p+4] == 1 || atkDefPos[p+5] == 1 || atkDefPos[p+6] == 1]longPass -> pcase {
-	j: pass -> UpdatePos(p, LP); AtkDef
+	j: forwardPass -> UpdatePos(p, LP); AtkDef
 	100-j: intercepted{danger = 5;} -> Skip
 };
 
-Def(i, j, k, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortPass -> pcase {
-	i: pass -> UpdatePos(p, SP); AtkMid
+/*Def(i, j, k, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortPass -> pcase {
+	i: forwardPass -> UpdatePos(p, SP); AtkMid
 	k: tackled{danger = 4;} -> Skip
 } [] [atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longPass -> pcase {
-	j: pass -> UpdatePos(p, LP); AtkMid
+	j: forwardPass -> UpdatePos(p, LP); AtkMid
 	k: tackled{danger = 4;} -> Skip
+};*/
+
+//NEW EDITS
+
+Def(i, j, k, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortPass -> pcase {
+	i: forwardPass -> UpdatePos(p, SP); AtkMid
+	k: playSidePass -> SidePassDef(i,j,k,p)
+} [] [atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longPass -> pcase {
+	j: forwardPass -> UpdatePos(p, LP); AtkMid
+	k: playSidePass -> SidePassDef(i,j,k,p)
 };
 
+SidePassDef(i, j, k, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1]shortPass -> pcase {
+	i: sidePass -> UpdatePos(p, SP); AtkDef
+	k: playDefensiveBackPass -> BackPassDef(i,j,k,p) 
+} [] [atkDefPos[p-6] == 1 || atkDefPos[p-5] == 1 || atkDefPos[p-4] == 1 || atkDefPos[p-3] == 1 || atkDefPos[p+3] == 1 || atkDefPos[p+4] == 1 || atkDefPos[p+5] == 1 || atkDefPos[p+6] == 1]longPass -> pcase {
+	j: sidePass -> UpdatePos(p, LP); AtkDef
+	k: playDefensiveBackPass -> BackPassDef(i,j,k,p)
+};
+
+BackPassDef(i, j, k, p) = [atkKepPos[p-2] == 1 || atkKepPos[p-1] == 1 || atkKepPos[p] == 1 || atkKepPos[p+1] == 1 || atkKepPos[p+2] == 1]shortPass -> pcase {
+	i: backPass -> UpdatePos(p, SP); AtkKep
+	k: intercepted{danger = 5;} -> Skip
+} [] [atkKepPos[p-6] == 1 || atkKepPos[p-5] == 1 || atkKepPos[p-4] == 1 || atkKepPos[p-3] == 1 || atkKepPos[p+3] == 1 || atkKepPos[p+4] == 1 || atkKepPos[p+5] == 1 || atkKepPos[p+6] == 1]longPass -> pcase {
+	j: backPass -> UpdatePos(p, LP); AtkKep
+	k: intercepted{danger = 5;} -> Skip //Same region as a keeper messing up a forward up
+};
+//NEW EDITS
+
+/*
 Mid(i, j, k, l, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortPass -> pcase {
 	i: pass -> UpdatePos(p, SP); AtkFor
 	l: tackled{danger = 3;} -> Skip
@@ -96,8 +126,38 @@ Mid(i, j, k, l, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p]
 } [] [defKepPos[C] == 1]longShot -> pcase {
 	k: shoot -> UpdatePos(p, LS); DefKep
 	l: tackled{danger = 3;} -> Skip
+};*/
+
+//NEW EDITS
+Mid(i, j, k, l, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortPass -> pcase {
+	i: pass -> UpdatePos(p, SP); AtkFor
+	l: playSidePass -> SidePassMid(i, j ,k, p)
+} [] [atkForPos[p-6] == 1 || atkForPos[p-5] == 1 || atkForPos[p-4] == 1 || atkForPos[p-3] == 1 || atkForPos[p+3] == 1 || atkForPos[p+4] == 1 || atkForPos[p+5] == 1 || atkForPos[p+6] == 1]longPass -> pcase {
+	j: pass{inAir = true;} -> UpdatePos(p, LP); AtkFor
+	l: playSidePass -> SidePassMid(i, j, k, p)
+} [] [defKepPos[C] == 1]longShot -> pcase {
+	k: shoot -> UpdatePos(p, LS); DefKep //if he chooses the shoot, he goes all offensive and forsakes all passive and defensive options
+	l: tackled{danger = 3;} -> Skip
 };
 
+SidePassMid(i, j, k, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortPass -> pcase {
+	i: sidePass -> UpdatePos(p, SP); AtkMid
+	k: playDefensiveBackPass -> BackPassMid(i,j,k,p)
+} [] [atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longPass -> pcase {
+	j: sidePass -> UpdatePos(p, LP); AtkMid
+	k: playDefensiveBackPass -> BackPassMid(i,j,k,p)
+};
+
+BackPassMid(i, j, k, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1]shortPass -> pcase {
+	i: backPass -> UpdatePos(p, SP); AtkDef
+	k: intercepted{danger = 4;} -> Skip
+} [] [atkKepPos[p-6] == 1 || atkKepPos[p-5] == 1 || atkKepPos[p-4] == 1 || atkKepPos[p-3] == 1 || atkKepPos[p+3] == 1 || atkKepPos[p+4] == 1 || atkKepPos[p+5] == 1 || atkKepPos[p+6] == 1]longPass -> pcase {
+	j: backPass -> UpdatePos(p, LP); AtkDef
+	k: intercepted{danger = 4;} -> Skip //Same region as a defender messing up a forward up
+};
+//NEW EDITS
+
+//Should a forward make a back pass? Is there any variables needed to store the number of forwards to gurantee a forward teammate to make a sidepass?
 For(i, j, k, l, m, p) = [defKepPos[C] == 1]finish -> pcase {
 	i: shoot -> UpdatePos(p, FI); DefKep
 	m: tackled{danger = 2;} -> Skip
@@ -111,6 +171,7 @@ For(i, j, k, l, m, p) = [defKepPos[C] == 1]finish -> pcase {
 	l: shoot -> UpdatePos(p, HD); DefKep
 	m: tackled{danger = 2;} -> Skip
 };
+
 
 Kep_2(i, p) = attemptSave -> pcase {
 	i: save{danger = 1;} -> Skip
@@ -160,6 +221,7 @@ UpdatePos(p, e) = case {
 			e == LP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 		}
+	
 };
 
 #define Goal0 danger <= 0;
