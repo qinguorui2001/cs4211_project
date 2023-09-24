@@ -13,9 +13,7 @@
 
 //Variable keeping track of number of sidepasses or backpasses allowed
 var atkDefMaxSidePass = 0; //The higher the number of allowed side passes, the more posession based a team is
-//var atkDefMaxBackPass = 2;
 var atkMidMaxSidePass = 0;
-//var atkMidMaxBackPass = 1;
 var atkForMaxSidePass = 0; //The forward can pass to another forward to have another chance of scoring
 var atkForMaxBackPass = 0; //The forward can pass back to a midfielder to shoot or to recycle the play
 
@@ -115,10 +113,10 @@ SidePassDef(sp, lp, lose, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || at
 
 Mid(sp, lp, shot, lose, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortFwdPassMid -> pcase {
 	sp: UpdatePos(FOR); AtkFor
-	lose: if (atkMidPlayers > 1 && atkMidMaxSidePass > 0) { sidePassMid{atkMidMaxSidePass--;} -> SidePassMid(sp,lp,lose,p) } else { interceptedAtkDef{danger = 3;} -> Skip }//if (atkMidMaxBackPass > 0) { backPassMid -> reduceBackPassChanceAtkMid{atkMidMaxBackPass--;} -> BackPassMid(sp,lp,lose,p) } else { interceptedAtkMid{danger = 3;} -> Skip }
+	lose: if (atkMidPlayers > 1 && atkMidMaxSidePass > 0) { sidePassMid{atkMidMaxSidePass--;} -> SidePassMid(sp,lp,lose,p) } else { interceptedAtkDef{danger = 3;} -> Skip }
 } [] [atkForPos[p-6] == 1 || atkForPos[p-5] == 1 || atkForPos[p-4] == 1 || atkForPos[p-3] == 1 || atkForPos[p+3] == 1 || atkForPos[p+4] == 1 || atkForPos[p+5] == 1 || atkForPos[p+6] == 1]longFwdPassMid{inAir = true;} -> pcase {
 	lp: UpdatePos(FOR); AtkFor
-	lose: if (atkMidPlayers > 1 && atkMidMaxSidePass > 0) { sidePassMid{atkMidMaxSidePass--;} -> SidePassMid(sp,lp,lose,p) } else { interceptedAtkDef{danger = 3;} -> Skip }//if (atkMidMaxBackPass > 0) { backPassMid -> reduceBackPassChanceAtkMid{atkMidMaxBackPass--;} -> BackPassMid(sp,lp,lose,p) } else { interceptedAtkMid{danger = 3;} -> Skip } 
+	lose: if (atkMidPlayers > 1 && atkMidMaxSidePass > 0) { sidePassMid{atkMidMaxSidePass--;} -> SidePassMid(sp,lp,lose,p) } else { interceptedAtkDef{danger = 3;} -> Skip }
 } [] [defKepPos[C] == 1]longShotMid -> pcase {
 	shot: UpdatePos(DEFKEP); DefKep
 	lose: tackledMid{danger = 3;} -> Skip
