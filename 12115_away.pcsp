@@ -56,7 +56,7 @@ var atkMidPos = [-1(6), 0, 1, 0, 1, 0, 1, 0, -1(6)];
 var atkForPos = [-1(6), 0, 1, 0, 1, 0, 1, 0, -1(6)];
 var defKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
 
-var posInd = 6;
+var posInd = L;
 ///////////// AWAY TEAM PLAYERS (Attacking Team) /////////////
 // The parameters represent the probabilities specific to the player 
 // The gurad only allows eligible players to get the ball, see Individual Positions section for more info
@@ -98,32 +98,20 @@ Kep_1(sp, lp, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] =
 
 Def(sp, lp, lose, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortFwdPassDef -> pcase {
 	sp: UpdatePos(MID); AtkMid
-	lose: if (atkDefPlayers > 1 && atkDefMaxSidePass > 0) { sidePassDef{atkDefMaxSidePass--;} -> SidePassDef(sp,lp,lose,p) } else { interceptedAtkDef{danger = 4;} -> Skip }//else if (atkDefMaxBackPass > 0) { backPassDef -> reduceBackPassChanceAtkDef{atkDefMaxBackPass--;} -> BackPassDef(sp,lp,lose,p) } else { interceptedAtkDef{danger = 4;} -> Skip }
-	//first check if can pass to someone in same lane, then check if can backpass to someone, if both cannot then he loses the ball. For now assume that keeper is always there
+	lose: if (atkDefPlayers > 1 && atkDefMaxSidePass > 0) { sidePassDef{atkDefMaxSidePass--;} -> SidePassDef(sp,lp,lose,p) } else { interceptedAtkDef{danger = 4;} -> Skip }
+	// First check if there is another defender to receive the ball and also if it is possible to still make a sidepass.
 } [] [atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longFwdPassDef -> pcase {
 	lp: UpdatePos(MID); AtkMid
-	lose: if (atkDefPlayers > 1 && atkDefMaxSidePass > 0) { sidePassDef{atkDefMaxSidePass--;} -> SidePassDef(sp,lp,lose,p) } else { interceptedAtkDef{danger = 4;} -> Skip  }//if (atkDefMaxBackPass > 0) { backPassDef -> reduceBackPassChanceAtkDef{atkDefMaxBackPass--;} -> BackPassDef(sp,lp,lose,p) } else { interceptedAtkDef{danger = 4;} -> Skip }
+	lose: if (atkDefPlayers > 1 && atkDefMaxSidePass > 0) { sidePassDef{atkDefMaxSidePass--;} -> SidePassDef(sp,lp,lose,p) } else { interceptedAtkDef{danger = 4;} -> Skip  }
 };
 
 SidePassDef(sp, lp, lose, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1]shortSidePassDef -> pcase {
-	sp:  UpdatePos(DEF); AtkDef
+	sp:  AtkDef
 	lose: interceptedAtkDef{danger = 4;} -> Skip
-	//lose: if (atkDefMaxBackPass > 0) { backPassDef -> reduceBackPassChanceAtkDef{atkDefMaxBackPass--;} -> BackPassDef(sp,lp,lose,p) } else  { interceptedAtkDef{danger = 4;} -> Skip }
 } [] [atkDefPos[p-6] == 1 || atkDefPos[p-5] == 1 || atkDefPos[p-4] == 1 || atkDefPos[p-3] == 1 || atkDefPos[p+3] == 1 || atkDefPos[p+4] == 1 || atkDefPos[p+5] == 1 || atkDefPos[p+6] == 1]longSidePassDef -> pcase {
-	lp:  UpdatePos(DEF); AtkDef
+	lp:  AtkDef
 	lose: interceptedAtkDef{danger = 4;} -> Skip
-	//lose: if (atkDefMaxBackPass > 0) { backPassDef -> reduceBackPassChanceAtkDef{atkDefMaxBackPass--;} -> BackPassDef(sp,lp,lose,p) } else  { interceptedAtkDef{danger = 4;} -> Skip }
 };
-
-/*
-BackPassDef(sp, lp, lose, p) = [atkKepPos[p-2] == 1 || atkKepPos[p-1] == 1 || atkKepPos[p] == 1 || atkKepPos[p+1] == 1 || atkKepPos[p+2] == 1]shortPassDef -> pcase {
-	sp: backPassDef -> UpdatePos(p, SP); AtkKep
-	lose: interceptedAtkDef{danger = 5;} -> Skip
-} [] [atkKepPos[p-6] == 1 || atkKepPos[p-5] == 1 || atkKepPos[p-4] == 1 || atkKepPos[p-3] == 1 || atkKepPos[p+3] == 1 || atkKepPos[p+4] == 1 || atkKepPos[p+5] == 1 || atkKepPos[p+6] == 1]longPassDef -> pcase {
-	lp: backPassDef -> UpdatePos(p, LP); AtkKep
-	lose: interceptedAtkDef{danger = 5;} -> Skip //Same region as a keeper messing up a forward up
-};
-*/
 
 Mid(sp, lp, shot, lose, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortFwdPassMid -> pcase {
 	sp: UpdatePos(FOR); AtkFor
@@ -137,23 +125,12 @@ Mid(sp, lp, shot, lose, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkF
 };
 
 SidePassMid(sp, lp, lose, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortSidePassMid -> pcase {
-	sp: UpdatePos(MID); AtkMid
+	sp: AtkMid
 	lose: interceptedAtkMid{danger = 3;} -> Skip
-	//lose: if (atkMidMaxBackPass > 0) { backPassMid -> reduceBackPassChanceAtkMid{atkMidMaxBackPass--;} -> BackPassMid(sp,lp,lose,p) } else { interceptedAtkMid{danger = 3;} -> Skip }
 } [] [atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longSidePassMid -> pcase {
-	lp: UpdatePos(MID); AtkMid
+	lp: AtkMid
 	lose: interceptedAtkMid{danger = 3;} -> Skip
-	//lose: if (atkMidMaxBackPass > 0) { backPassMid -> reduceBackPassChanceAtkMid{atkMidMaxBackPass--;} -> BackPassMid(sp,lp,lose,p) } else { interceptedAtkMid{danger = 3;} -> Skip }
 };
-
-/*
-BackPassMid(sp, lp, lose, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1]shortPassMid -> pcase {
-	sp: backPassMid -> UpdatePos(p, SP); AtkDef
-	lose: interceptedMid{danger = 4;} -> Skip
-} [] [atkKepPos[p-6] == 1 || atkKepPos[p-5] == 1 || atkKepPos[p-4] == 1 || atkKepPos[p-3] == 1 || atkKepPos[p+3] == 1 || atkKepPos[p+4] == 1 || atkKepPos[p+5] == 1 || atkKepPos[p+6] == 1]longPassMid -> pcase {
-	lp: backPassMid -> UpdatePos(p, LP); AtkDef
-	lose: interceptedMid{danger = 4;} -> Skip //Same region as a defender messing up a forward up
-};*/
 
 For(sp, lp, fin, ls, voll, head, lose, p) = [defKepPos[C] == 1]finish -> pcase {
 	fin: UpdatePos(DEFKEP); DefKep 
@@ -161,6 +138,7 @@ For(sp, lp, fin, ls, voll, head, lose, p) = [defKepPos[C] == 1]finish -> pcase {
 } [] [defKepPos[C] == 1]longShot -> pcase {
 	ls: UpdatePos(DEFKEP); DefKep
 	lose: if (atkForPlayers > 1 && atkForMaxSidePass > 0) { sidePassFor{atkForMaxSidePass--;} -> SidePassFor(sp,lp,lose,p) } else if (atkForMaxBackPass > 0 && atkMidPlayers > 0) { backPassFor{atkForMaxBackPass--;} -> BackPassFor(sp,lp,lose,p) } else { tackledAtkFor{danger = 2;} -> Skip }
+	//First check if there is another forward to receive the sidepass and whether player allowed to make sidepass. Else, check if there is a midifielder available to make backpass to and whether backpass is allowed. Failing all, player is tackled.
 } [] [defKepPos[C] == 1 && inAir == true]volley -> pcase {
 	voll: UpdatePos(DEFKEP); DefKep
 	lose: if (atkForPlayers > 1 && atkForMaxSidePass > 0) { sidePassFor{atkForMaxSidePass--;} -> SidePassFor(sp,lp,lose,p) } else if (atkForMaxBackPass > 0 && atkMidPlayers > 0) { backPassFor{atkForMaxBackPass--;} -> BackPassFor(sp,lp,lose,p) } else { tackledAtkFor{danger = 2;} -> Skip }
@@ -170,10 +148,10 @@ For(sp, lp, fin, ls, voll, head, lose, p) = [defKepPos[C] == 1]finish -> pcase {
 };
 
 SidePassFor(sp, lp, lose, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortSidePassFor -> pcase {
-	sp: UpdatePos(FOR); AtkFor
+	sp: AtkFor
 	lose: if (atkForMaxBackPass > 0) { backPassFor{atkForMaxBackPass--;} -> BackPassFor(sp,lp,lose,p) } else { tackledAtkFor{danger = 2;} -> Skip }
 } [] [atkForPos[p-6] == 1 || atkForPos[p-5] == 1 || atkForPos[p-4] == 1 || atkForPos[p-3] == 1 || atkForPos[p+3] == 1 || atkForPos[p+4] == 1 || atkForPos[p+5] == 1 || atkForPos[p+6] == 1]longSidePassFor -> pcase {
-	lp: UpdatePos(FOR); AtkFor
+	lp: AtkFor
 	lose: if (atkForMaxBackPass > 0) { backPassFor{atkForMaxBackPass--;} -> BackPassFor(sp,lp,lose,p) } else { tackledAtkFor{danger = 2;} -> Skip }
 };
 
@@ -194,83 +172,37 @@ Kep_2(hand, p) = attemptSave -> pcase {
 UpdatePos(nextPos) = case {
 	nextPos == DEF:
 		{
-		while (posInd <= 12) {
+		while (posInd <= R) {
 			if (atkDefPos[posInd] == 1) {
 				pos[posInd] = 1;
 			}
 			posInd++;
 		}
-		posInd = 0;
+		posInd = L;
 		}-> Skip
 	nextPos == MID:
 		{
-		while (posInd <= 12) {
+		while (posInd <= R) {
 			if (atkMidPos[posInd] == 1) {
 				pos[posInd] = 1;
 			}
 			posInd++;
 		}
-		posInd = 0;
+		posInd = L;
 		} -> Skip
 	nextPos == FOR: 
 		{
-		while (posInd <= 12) {
+		while (posInd <= R) {
 			if (atkForPos[posInd] == 1) {
 				pos[posInd] = 1;
 			}
 			posInd++;
 		}
-		posInd = 0;
+		posInd = L;
 		} -> Skip
 	default:
 		{pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 }; 
-
-/*UpdatePos(p, e) = case {
-	p == L: 
-		case {
-			e == SP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-			e == LP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
-			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-		}
-	p == LR:
-		case {
-			e == SP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-			e == LP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
-			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-		}
-	p == CL: 
-		case {
-			e == SP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 1; pos[RL] = 0; pos[R] = 0;} -> Skip
-			e == LP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 1; pos[R] = 1;} -> Skip
-			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-		}
-	p == C:
-		case {
-			e == SP: {pos[L] = 0; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 0;} -> Skip
-			e == LP: {pos[L] = 1; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 1;} -> Skip
-			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-		}	
-	p == CR:
-		case {
-			e == SP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 1; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
-			e == LP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-		}
-	p == RL:
-		case {
-			e == SP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
-			e == LP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-		}
-	default:
-		case {
-			e == SP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
-			e == LP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
-		}
-	
-}; */
 
 #define Goal0 danger <= 0;
 #define Goal1 danger <= 1;
