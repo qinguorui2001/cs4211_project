@@ -1,6 +1,8 @@
 // NOTE: This will only produce probabilities of goal when the away team attacks while the home team defends 
 // A similar pcsp file will have to be generated from the home team POV to meaningfully compare which team has the higher chance of scoring during an attack
 
+#import "PAT.Math";
+
 // Position of players in grid
 // Left, LeftRight, and CenterLeft etc.
 #define L 6;
@@ -142,19 +144,20 @@ Mid(sp, lp, ls, lose, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkFor
 }
 ;
 
+#define probFactor(rating, dist) rating * call(Pow, 2, 4 - dist);
 
 // add d, as dribbling
 For(sp, lp, fi, ls, vo, hd, lose, dr, p) = [defKepPos[C] == 1 && distToKep[p] == 1]finish -> pcase {
-	fi: shoot -> UpdatePos(p, FI); DefKep
+	call(probFactor, fi, distToKep[p]): shoot -> UpdatePos(p, FI); DefKep
 	lose: tackled{danger = 2;} -> Skip
 } [] [defKepPos[C] == 1 && distToKep[p] > 1]longShot -> pcase {
-	ls: shoot -> UpdatePos(p, LS); DefKep
+	call(probFactor, ls, distToKep[p]): shoot -> UpdatePos(p, LS); DefKep
 	lose: tackled{danger = 2;} -> Skip
 } [] [defKepPos[C] == 1 && inAir == true]volley -> pcase {
-	vo: shoot -> UpdatePos(p, VO); DefKep
+	call(probFactor, vo, distToKep[p]): shoot -> UpdatePos(p, VO); DefKep
 	lose: tackled{danger = 2;} -> Skip
 } [] [defKepPos[C] == 1 && inAir == true]header -> pcase {
-	hd: shoot -> UpdatePos(p, HD); DefKep
+	call(probFactor, hd, distToKep[p]): shoot -> UpdatePos(p, HD); DefKep
 	lose: tackled{danger = 2;} -> Skip
 } [] [(defKepPos[C] == 1 && inAir == false) && distToKep[p] > 1]dribbling -> pcase {
 	dr: dribble -> UpdatePos(p, DR); UpdateForDistToKep(p); AtkFor
