@@ -92,11 +92,11 @@ Kep_1(i, j, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 
 
 Def(i, j, k, l, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortPass -> pcase {
 	i: pass -> UpdatePos(p, SP); AtkMid
-	k: tackled{danger = 4;} -> Skip
+	k-l: tackled{danger = 4;} -> Skip
 	l: foul -> AtkFreeKickDef
 } [] [atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longPass -> pcase {
 	j: pass -> UpdatePos(p, LP); AtkMid
-	k: tackled{danger = 4;} -> Skip
+	k-l: tackled{danger = 4;} -> Skip
 	l: foul -> AtkFreeKickDef
 };
 
@@ -110,15 +110,15 @@ FKDef(i, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 |
 
 Mid(i, j, k, l, m, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortPass -> pcase {
 	i: pass -> UpdatePos(p, SP); AtkFor
-	l: tackled{danger = 3;} -> Skip
+	l-m: tackled{danger = 3;} -> Skip
 	m: foul -> AtkFreeKickMid
 } [] [atkForPos[p-6] == 1 || atkForPos[p-5] == 1 || atkForPos[p-4] == 1 || atkForPos[p-3] == 1 || atkForPos[p+3] == 1 || atkForPos[p+4] == 1 || atkForPos[p+5] == 1 || atkForPos[p+6] == 1]longPass -> pcase {
 	j: pass{inAir = true;} -> UpdatePos(p, LP); AtkFor
-	l: tackled{danger = 3;} -> Skip
+	l-m: tackled{danger = 3;} -> Skip
 	m: foul -> AtkFreeKickMid
 } [] [defKepPos[C] == 1]longShot -> pcase {
 	k: shoot -> UpdatePos(p, LS); DefKep
-	l: tackled{danger = 3;} -> Skip
+	l-m: tackled{danger = 3;} -> Skip
 	m: foul -> AtkFreeKickMid
 };
 
@@ -135,19 +135,19 @@ FKMid(i, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 |
 
 For(i, j, k, l, m, n, p) = [defKepPos[C] == 1]finish -> pcase {
 	i: shoot -> UpdatePos(p, FI); DefKep
-	m: tackled{danger = 2;} -> Skip
+	m-n: tackled{danger = 2;} -> Skip
 	n: foul -> AtkFreeKickFor
 } [] [defKepPos[C] == 1]longShot -> pcase {
 	j: shoot -> UpdatePos(p, LS); DefKep
-	m: tackled{danger = 2;} -> Skip
+	m-n: tackled{danger = 2;} -> Skip
 	n: foul -> AtkFreeKickFor
 } [] [defKepPos[C] == 1 && inAir == true]volley -> pcase {
 	k: shoot -> UpdatePos(p, VO); DefKep
-	m: tackled{danger = 2;} -> Skip
+	m-n: tackled{danger = 2;} -> Skip
 	n: foul -> AtkFreeKickFor
 } [] [defKepPos[C] == 1 && inAir == true]header -> pcase {
 	l: shoot -> UpdatePos(p, HD); DefKep
-	m: tackled{danger = 2;} -> Skip
+	m-n: tackled{danger = 2;} -> Skip
 	n: foul -> AtkFreeKickFor
 };
 
