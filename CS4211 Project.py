@@ -250,3 +250,31 @@ if __name__ == "__main__":
     seasons = [20152016, 20162017, 20172018, 20182019, 20192020, 20202021]
     for season in seasons:
         readfile(season)
+
+# Added function for dribbling success probability
+def dribblingSuccessProbability(player, defender):
+    # Skill weights
+    skillWeight = 0.6
+    physicalWeight = 0.3
+    otherWeight = 0.1
+
+    # Skill scores
+    playerSkillScore = player['skill_dribbling'] + player['skill_ball_control'] + player['movement_agility'] + player['movement_balance']
+    defenderSkillScore = defender['defending'] + defender['defending_standing_tackle'] + defender['defending_sliding_tackle'] + defender['mentality_interceptions']
+
+    # Physical attribute scores
+    playerPhysicalScore = player['power_strength'] + player['power_stamina'] + player['pace']
+    defenderPhysicalScore = defender['power_strength'] + defender['power_stamina'] + defender['pace']
+
+    # Other factors scores
+    playerOtherScore = player['mentality_composure'] + player['work_rate']
+    defenderOtherScore = defender['mentality_composure'] + defender['work_rate']
+
+    # Calculate total scores
+    playerTotalScore = skillWeight * playerSkillScore + physicalWeight * playerPhysicalScore + otherWeight * playerOtherScore
+    defenderTotalScore = skillWeight * defenderSkillScore + physicalWeight * defenderPhysicalScore + otherWeight * defenderOtherScore
+
+    # Calculate dribbling success probability
+    probability = playerTotalScore / (playerTotalScore + defenderTotalScore)
+
+    return probability
