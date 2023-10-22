@@ -36,34 +36,39 @@ def readfile(season):
         away_fmn = row['away_formation']
         home_team = row['home_xi_names']
         away_team = row['away_xi_names']
-        home seq = row['home_sequence']
+        home_seq = row['home_sequence']
         away_seq = row['away_sequence']
         #define whether it is 3 levels i.e 4-3-3/4-5-1... ,or 4 levels i.e 4-2-3-1/4-4-1-1...
-        bool is3levels_home = False
-        bool is4levels_home = False
-        bool is3levels_away = False
-        bool is4levels_away = False
+        is3levels_home = False
+        is4levels_home = False
+        is3levels_away = False
+        is4levels_away = False
         #instantiate
         def_H,mid_H,for_H = 0 #for 3 levels
-        def_4H,mid_4H = 0 #for 4 levels, in this case def_4H replaces mid_H
+        def_4H, midDef_4H, mid_4H = 0 #for 4 levels, in this case def_4H replaces mid_H
         def_A,mid_A,for_A = 0 #for 3 levels
-        def_4A,mid_4A = 0 #for 4 levels, in this case def_4H replaces mid_H
+        def_4A,midDef_4A, mid_4A = 0 #for 4 levels, in this case def_4H replaces mid_H
         #address formatting issue for formations
         if "/" in home_fmn: #means 3 levels
             print("Is 3 levels")
-            bool is3levels_home = True
+            is3levels_home = True
             posArray = home_fmn.split('/')
             def_H,mid_H,for_H = posArray[0],posArray[1],int(posArray[2]) - 2000 
         else: #means 4 levels
-            bool is4levels_home = True
-            #TODO
-        if "/" in away_fmn: #means 3 levels
-            bool is3levels_away = True
+            print("Is 4 levels")
+            is4levels_home = True
             posArray = home_fmn.split('/')
+            def_4H,midDef_4H, mid_4H,for_H = posArray[0],posArray[1],posArray[2], posArray[3]
+           
+        if "/" in away_fmn: #means 3 levels
+            is3levels_away = True
+            posArray = away_fmn.split('/')
             def_A,mid_A,for_A = posArray[0],posArray[1],int(posArray[2]) - 2000 
         else: #means 4 levels
-            bool is4levels_away = True
-            #TODO
+            is4levels_away = True
+            posArray = away_fmn.split('/')
+            def_4A,midDef_4A, mid_4A,for_4A = posArray[0],posArray[1],posArray[2], posArray[3]
+          
         if (is3levels_home):
             ##generate home pcsp file using 3 levels template
             
@@ -80,7 +85,7 @@ def readfile(season):
             # Modify the desired row and column
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
-            homePositions = home_sequence.split(',')
+            homePositions = home_seq.split(',')
             home_team = home_team.split(',')
             goalkeeperNameHome = home_team[0]
             defenderPositionsHome = homePositions[1:def_H]
@@ -98,15 +103,15 @@ def readfile(season):
                 if (pos == 'L'):
                     lines[41] = lines[41][:24] + '1' + lines[41][25:]
                     
-                else if (pos == 'LR'):
+                elif (pos == 'LR'):
                     lines[41] = lines[41][:27] + '1' + lines[41][28:]
-                else if (pos == 'CL'):
+                elif (pos == 'CL'):
                     lines[41] = lines[41][:30] + '1' + lines[41][31:]
-                else if (pos == 'C'):
+                elif (pos == 'C'):
                     lines[41] = lines[41][:33] + '1' + lines[41][34:]
-                else if (pos == 'CR'):
+                elif (pos == 'CR'):
                     lines[41] = lines[41][:36] + '1' + lines[41][37:]
-                else if (pos == 'RL'):
+                elif (pos == 'RL'):
                     lines[41] = lines[41][:39] + '1' + lines[41][41:]
                 else:
                     lines[41] = lines[41][:42] + '1' + lines[41][43:]
@@ -114,15 +119,15 @@ def readfile(season):
                 #TODO modify midfielder ratings in pcsp file
                 if (pos == 'L'):
                     lines[42] = lines[42][:24] + '1' + lines[42][25:]
-                else if (pos == 'LR'):
+                elif (pos == 'LR'):
                     lines[42] = lines[42][:27] + '1' + lines[42][28:]
-                else if (pos == 'CL'):
+                elif (pos == 'CL'):
                     lines[42] = lines[42][:30] + '1' + lines[42][31:]
-                else if (pos == 'C'):
+                elif (pos == 'C'):
                     lines[42] = lines[42][:33] + '1' + lines[42][34:]
-                else if (pos == 'CR'):
+                elif (pos == 'CR'):
                     lines[42] = lines[42][:36] + '1' + lines[42][37:]
-                else if (pos == 'RL'):
+                elif (pos == 'RL'):
                     lines[42] = lines[42][:39] + '1' + lines[42][40:]
                 else:
                     lines[42] = lines[42][:42] + '1' + lines[42][43:]
@@ -131,19 +136,19 @@ def readfile(season):
                 if (pos == 'L'):
                     lines[43] = lines[43][:24] + '1' + lines[43][25:]
                     lines[85] = lines[85][:24] + '1' + lines[85][25:]
-                else if (pos == 'LR'):
+                elif (pos == 'LR'):
                     lines[43] = lines[43][:27] + '1' + lines[43][28:]
                     lines[85] = lines[85][:27] + '1' + lines[85][28:]
-                else if (pos == 'CL'):
+                elif (pos == 'CL'):
                     lines[43] = lines[43][:30] + '1' + lines[43][31:]
                     lines[85] = lines[85][:30] + '1' + lines[85][31:]
-                else if (pos == 'C'):
+                elif (pos == 'C'):
                     lines[43] = lines[43][:33] + '1' + lines[43][34:]
                     lines[85] = lines[85][:33] + '1' + lines[85][34:]
-                else if (pos == 'CR'):
+                elif (pos == 'CR'):
                     lines[43] = lines[43][:36] + '1' + lines[43][37:]
                     lines[85] = lines[85][:36] + '1' + lines[85][37:]
-                else if (pos == 'RL'):
+                elif (pos == 'RL'):
                     lines[43] = lines[43][:39] + '1' + lines[43][40:]
                     lines[85] = lines[85][:39] + '1' + lines[85][40:]
                 else:
@@ -168,7 +173,7 @@ def readfile(season):
             # Modify the desired row and column
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
-            awayPositions = away_sequence.split(',')
+            awayPositions = away_seq.split(',')
             defenderPositionsAway = awayPositions[1:def_A]
             midfielderPositionsAway = awayPositions[def_A:def_A +mid_A]
             forwardPositionsAway = awayPositions[def_A+mid_A:]
@@ -176,21 +181,170 @@ def readfile(season):
             for ind,pos in enumerate(defenderPositionsAway):
                 if (pos == 'L'):
                     lines[40] = lines[40][:24] + '1' + lines[40][25:]
-                else if (pos == 'LR'):
+                elif (pos == 'LR'):
                     lines[40] = lines[40][:27] + '1' + lines[40][28:]
-                else if (pos == 'CL'):
+                elif (pos == 'CL'):
                     lines[40] = lines[40][:30] + '1' + lines[40][31:]
-                else if (pos == 'C'):
+                elif (pos == 'C'):
                     lines[40] = lines[40][:33] + '1' + lines[40][34:]
-                else if (pos == 'CR'):
+                elif (pos == 'CR'):
                     lines[40] = lines[40][:36] + '1' + lines[40][37:]
-                else if (pos == 'RL'):
+                elif (pos == 'RL'):
                     lines[40] = lines[40][:39] + '1' + lines[40][40:]
                 else:
                     lines[40] = lines[40][:42] + '1' + lines[40][43:]
             # Open the file in write mode and write the modified content
             with open(out_file, 'w') as file:
                 file.writelines(lines)
+        else:
+                        ##generate home pcsp file using 3 levels template
+            
+            #first create the home pcsp file from the template file
+            out_file = f"path/to/output/{home}{away}{season}.pcsp"
+            open(out_file,'w').close() #creates the file
+            with open(template_file_4f, 'r') as fp_in, open(out_file, 'w') as fp_out: #copy template file to out file
+                for line in fp_in:
+                    fp_out.write(line)
+            with open(out_file, 'r') as file:
+                # Read the contents of the file into a list of lines
+                lines = file.readlines()
+            
+            # Modify the desired row and column
+            #remember that we are reading from array and the numbers are the indexes of the array
+            #and not the true columns and rows,so minus 1 from them
+            homePositions = home_seq.split(',')
+            home_team = home_team.split(',')
+            goalkeeperNameHome = home_team[0]
+            defenderPositionsHome = homePositions[1:def_4H]
+            midDeffielderPositionsHome= homePositions[def_4H:def_4H + midDef_4H]
+            midDeffielderNamesHome= home_team[def_4H:def_4H + midDef_4H]
+            defenderNamesHome = home_team[1:def_4H]
+            midfielderPositionsHome = homePositions[midDef_4H:midDef_4H +mid_4H]
+            midfielderNamesHome = home_team[midDef_4H:midDef_4H +mid_4H]
+            forwardPositionsHome = homePositions[def_4H+ midDef_4H + mid_4H:]
+            forwardNamesHome = home_team[def_4H + midDef_4H + mid_4H:]
+            
+            ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) & (df_ratings['long_name'] == goalkeeperNameHome)].values
+            #TODO modify Goalkeeper ratings in pcsp file
+            for ind,pos in enumerate(defenderPositionsHome):
+                ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) & (df_ratings['long_name'] == defenderNamesHome[ind])].values
+                #TODO modify defender ratings in pcsp file
+                if (pos == 'L'):
+                    lines[41] = lines[41][:24] + '1' + lines[41][25:]
+                    
+                elif (pos == 'LR'):
+                    lines[41] = lines[41][:27] + '1' + lines[41][28:]
+                elif (pos == 'CL'):
+                    lines[41] = lines[41][:30] + '1' + lines[41][31:]
+                elif (pos == 'C'):
+                    lines[41] = lines[41][:33] + '1' + lines[41][34:]
+                elif (pos == 'CR'):
+                    lines[41] = lines[41][:36] + '1' + lines[41][37:]
+                elif (pos == 'RL'):
+                    lines[41] = lines[41][:39] + '1' + lines[41][41:]
+                else:
+                    lines[41] = lines[41][:42] + '1' + lines[41][43:]
+            for ind,pos in enumerate(midDeffielderPositionsHome):
+                #TODO modify midfielder ratings in pcsp file
+                if (pos == 'L'):
+                    lines[42] = lines[42][:27] + '1' + lines[42][28:]
+                elif (pos == 'LR'):
+                    lines[42] = lines[42][:30] + '1' + lines[42][31:]
+                elif (pos == 'CL'):
+                    lines[42] = lines[42][:33] + '1' + lines[42][34:]
+                elif (pos == 'C'):
+                    lines[42] = lines[42][:36] + '1' + lines[42][37:]
+                elif (pos == 'CR'):
+                    lines[42] = lines[42][:39] + '1' + lines[42][40:]
+                elif (pos == 'RL'):
+                    lines[42] = lines[42][:42] + '1' + lines[42][43:]
+                else:
+                    lines[42] = lines[42][:45] + '1' + lines[42][46:]
+            for ind,pos in enumerate(midfielderPositionsHome):
+                #TODO modify midfielder ratings in pcsp file
+                if (pos == 'L'):
+                    lines[43] = lines[43][:24] + '1' + lines[43][25:]
+                elif (pos == 'LR'):
+                    lines[43] = lines[43][:27] + '1' + lines[43][28:]
+                elif (pos == 'CL'):
+                    lines[43] = lines[43][:30] + '1' + lines[43][31:]
+                elif (pos == 'C'):
+                    lines[43] = lines[43][:33] + '1' + lines[43][34:]
+                elif (pos == 'CR'):
+                    lines[43] = lines[43][:36] + '1' + lines[43][37:]
+                elif (pos == 'RL'):
+                    lines[43] = lines[43][:39] + '1' + lines[43][40:]
+                else:
+                    lines[43] = lines[43][:42] + '1' + lines[43][43:]
+            for ind,pos in enumerate(forwardPositionsHome):
+            #TODO modify forward ratings in pcsp file
+                if (pos == 'L'):
+                    lines[44] = lines[44][:24] + '1' + lines[44][25:]
+                    lines[89] = lines[89][:24] + '1' + lines[89][25:]
+                elif (pos == 'LR'):
+                    lines[44] = lines[44][:27] + '1' + lines[44][28:]
+                    lines[89] = lines[89][:27] + '1' + lines[89][28:]
+                elif (pos == 'CL'):
+                    lines[44] = lines[44][:30] + '1' + lines[44][31:]
+                    lines[89] = lines[89][:30] + '1' + lines[89][31:]
+                elif (pos == 'C'):
+                    lines[44] = lines[44][:33] + '1' + lines[44][34:]
+                    lines[89] = lines[89][:33] + '1' + lines[89][34:]
+                elif (pos == 'CR'):
+                    lines[44] = lines[44][:36] + '1' + lines[44][37:]
+                    lines[89] = lines[89][:36] + '1' + lines[89][37:]
+                elif (pos == 'RL'):
+                    lines[44] = lines[44][:39] + '1' + lines[44][40:]
+                    lines[89] = lines[89][:39] + '1' + lines[89][40:]
+                else:
+                    lines[44] = lines[44][:42] + '1' + lines[44][43:]
+                    lines[89] = lines[89][:42] + '1' + lines[89][43:]
+            
+            df_ratings.loc[(df_ratings['club_name'] == home) & (df_ratings['long_name'] == )]
+            # Open the file in write mode and write the modified content
+            with open(out_file, 'w') as file:
+                file.writelines(lines)
+            
+            #then create the away pcsp file from the template file
+            out_file = f"path/to/output/{away}{home}{season}.pcsp"
+            open(out_file,'w').close() #creates the file
+            with open(template_file_3f, 'r') as fp_in, open(out_file, 'w') as fp_out: #copy template file to out file
+                for line in fp_in:
+                    fp_out.write(line)
+            with open(out_file, 'r') as file:
+                # Read the contents of the file into a list of lines
+                lines = file.readlines()
+            
+            # Modify the desired row and column
+            #remember that we are reading from array and the numbers are the indexes of the array
+            #and not the true columns and rows,so minus 1 from them
+            awayPositions = away_seq.split(',')
+            defenderPositionsAway = awayPositions[1:def_A]
+            midfielderPositionsAway = awayPositions[def_A:def_A +mid_A]
+            forwardPositionsAway = awayPositions[def_A+mid_A:]
+            #TODO: Complete the rest of the code for away team
+            for ind,pos in enumerate(defenderPositionsAway):
+                if (pos == 'L'):
+                    lines[40] = lines[40][:24] + '1' + lines[40][25:]
+                elif (pos == 'LR'):
+                    lines[40] = lines[40][:27] + '1' + lines[40][28:]
+                elif (pos == 'CL'):
+                    lines[40] = lines[40][:30] + '1' + lines[40][31:]
+                elif (pos == 'C'):
+                    lines[40] = lines[40][:33] + '1' + lines[40][34:]
+                elif (pos == 'CR'):
+                    lines[40] = lines[40][:36] + '1' + lines[40][37:]
+                elif (pos == 'RL'):
+                    lines[40] = lines[40][:39] + '1' + lines[40][40:]
+                else:
+                    lines[40] = lines[40][:42] + '1' + lines[40][43:]
+            # Open the file in write mode and write the modified content
+            with open(out_file, 'w') as file:
+                file.writelines(lines)
+
+
+
+            
     #after adding all the pcsp for the matches, we can start to run the PAT3 Console on the files
     
     # then from all the outputs, extract out the probabilities from home tema and away team, then softmax them to get the softmaxed home team victory probability
