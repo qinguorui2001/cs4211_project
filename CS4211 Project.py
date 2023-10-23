@@ -97,6 +97,25 @@ def readfile(season):
             
             ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) & (df_ratings['long_name'] == goalkeeperNameHome)].values
             #TODO modify Goalkeeper ratings in pcsp file
+            ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) & (df_ratings['long_name'] == goalkeeperNameHome)].values
+            short_pass_rating = ratings_row[0]['short_passing']
+            long_pass_rating = ratings_row[0]['long_passing']
+
+            # Define the line number of AtkKep and DefKep in the file
+            atk_kep_line_number = 53
+            def_kep_line_number = 72
+
+            # Update the rating of the AtkKep row
+            lines[atk_kep_line_number - 1] = f"AtkKep = [pos[C] == 1]Kep_1({short_pass_rating}, {long_pass_rating}, C);\n"
+
+            # Update the score of a DefKep row
+            lines[def_kep_line_number - 1] = f"DefKep = [pos[C] == 1]Kep_2({short_pass_rating}, C);\n"  # 这里我用了short_pass_rating，你可以根据需要更改
+
+            # write back file
+            with open(out_file, 'w') as file:
+                file.writelines(lines)
+
+            
             for ind,pos in enumerate(defenderPositionsHome):
                 ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) & (df_ratings['long_name'] == defenderNamesHome[ind])].values
                 #TODO modify defender ratings in pcsp file
