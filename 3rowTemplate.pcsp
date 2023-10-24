@@ -129,33 +129,33 @@ FKDef(successful, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[
 
 Mid(sp, lp, ls, lose, fouled, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortPass -> pcase {
 	sp: pass -> UpdatePos(p, SP); AtkFor
-	lose-fouled: tackled{danger = 3;} -> Skip
+	lose: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 } [] [atkForPos[p-6] == 1 || atkForPos[p-5] == 1 || atkForPos[p-4] == 1 || atkForPos[p-3] == 1 || atkForPos[p+3] == 1 || atkForPos[p+4] == 1 || atkForPos[p+5] == 1 || atkForPos[p+6] == 1]longPass -> pcase {
 	lp: pass{inAir = true;} -> UpdatePos(p, LP); AtkFor
-	lose-fouled: tackled{danger = 3;} -> Skip
+	lose: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 } [] [defKepPos[C] == 1]longShot -> pcase {
 	ls: shoot -> UpdatePos(p, LS); DefKep
-	lose-fouled: tackled{danger = 3;} -> Skip
+	lose: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 	// implement back pass 
 } [] [(atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1) && memMid[p]==0]shortBackPass -> pcase {
 	sp: pass -> UpdatePos(p, SP); UpdateMem(MID, p); AtkDef
-	lose-fouled: tackled{danger = 3;} -> Skip
+	lose: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 } [] [(atkDefPos[p-6] == 1 || atkDefPos[p-5] == 1 || atkDefPos[p-4] == 1 ||atkDefPos[p-3] == 1 || atkDefPos[p+3] == 1 || atkDefPos[p+4] == 1 || atkDefPos[p+5] == 1 || atkDefPos[p+6] == 1)  && memMid[p]==0]longBackPass -> pcase {
 	lp: pass -> UpdatePos(p, LP); UpdateMem(MID, p);AtkDef
-	lose-fouled: tackled{danger = 3;} -> Skip
+	lose: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 	// implement side pass
 } [] [(atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1)  && memMid[p]==0]shortSidePass -> pcase {
 	sp: pass -> UpdatePos(p, SP); UpdateMem(MID, p);AtkMid
-	lose-fouled: tackled{danger = 3;} -> Skip
+	lose: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 } [] [(atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1)  && memMid[p]==0]longSidePass -> pcase {
 	lp: pass -> UpdatePos(p, LP); UpdateMem(MID, p); AtkMid
-	lose-fouled: tackled{danger = 3;} -> Skip
+	lose: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 };
 
@@ -176,27 +176,25 @@ FKMid(successful, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[
 //The closer to the goal, the higher the chance of scoring
 For(sp, lp, fi, ls, vo, hd, dr, lose, fouled, p) = [defKepPos[C] == 1 && distToKep[p] == 1]finish -> pcase {
 	call(probFactor, fi, distToKep[p]): shoot -> UpdatePos(p, FI); DefKep
-	lose-fouled: tackled{danger = 2;} -> Skip
+	lose: tackled{danger = 2;} -> Skip
 	fouled: foul -> AtkFreeKickFor
-
 } [] [defKepPos[C] == 1 && distToKep[p] > 1]longShot -> pcase {
 	call(probFactor, ls, distToKep[p]): shoot -> UpdatePos(p, LS); DefKep
-	lose-fouled: tackled{danger = 2;} -> Skip
+	lose: tackled{danger = 2;} -> Skip
 	fouled: foul -> AtkFreeKickFor
 } [] [defKepPos[C] == 1 && inAir == true]volley -> pcase {
 	call(probFactor, vo, distToKep[p]): shoot -> UpdatePos(p, VO); DefKep
-	lose-fouled: tackled{danger = 2;} -> Skip
+	lose: tackled{danger = 2;} -> Skip
 	fouled: foul -> AtkFreeKickFor
 } [] [defKepPos[C] == 1 && inAir == true]header -> pcase {
 	call(probFactor, hd, distToKep[p]): shoot -> UpdatePos(p, HD); DefKep
-	lose-fouled: tackled{danger = 2;} -> Skip
+	lose: tackled{danger = 2;} -> Skip
 	fouled: foul -> AtkFreeKickFor
 } [] [(defKepPos[C] == 1 && inAir == false) && distToKep[p] > 1]dribbling -> pcase {
 	dr: dribble -> UpdatePos(p, DR); UpdateForDistToKep(p); AtkFor
-	lose-fouled: tackled{danger = 2;} -> Skip
+	lose: tackled{danger = 2;} -> Skip
 	fouled: foul -> AtkFreeKickFor
 };
-
 
 FKFor(successful, p) = [defKepPos[C] == 1]finish -> pcase {
 	successful: shoot -> UpdatePos(p, FI); DefKep
