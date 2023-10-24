@@ -75,7 +75,7 @@ AtkFreeKickMid = [pos[RL] == 1]FKMid(80, RL) [] [pos[C] == 1]FKMid(80, C) [] [po
 
 AtkFor =   [pos[C] == 1]For(70,54,75, 73, 66, 76,78, 75, 10, C);
 
-AtkFreeKickFor = [pos[C] == 1]FKFor(80, RL);
+AtkFreeKickFor = [pos[C] == 1]FKFor(80, C);
 ///////////// HOME TEAM PLAYERS (Defending Team) /////////////
 // Home team defenders, midfielders and forwards are already implicitly "defending" via the prob. to lose the ball parameter
 DefKep = [pos[C] == 1]Kep_2(72, C);
@@ -93,7 +93,7 @@ var memDef = [-1(6), 0(7), -1(6)];
 var memMidDef = [-1(6), 0(7), -1(6)];
 var memMid = [-1(6), 0(7), -1(6)];
 var memFor = [-1(6), 0(7), -1(6)];
-var distToKep = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+var distToKep = [-1(6), 0, 0, 0, 4, 0, 0, 0, -1(6)];
 
 // call this just means starting from kep-1
 Kep_1(sp, lp, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1]shortPass -> pcase {
@@ -163,10 +163,10 @@ MidDef(sp, lp, lose,fouled, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || 
 
 FKMidDef(successful,p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortPass -> pcase {
 	successful: pass -> UpdatePos(p, SP); AtkMid
-	100-successful: tackled{danger = 4;} -> Skip
+	100-successful: tackled{danger = 3;} -> Skip
 } [] [atkMidDefPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longPass -> pcase {
 	successful: pass -> UpdatePos(p, LP); AtkMid
-	100-successful: tackled{danger = 4;} -> Skip
+	100-successful: tackled{danger = 3;} -> Skip
 };
 
 Mid(sp, lp, ls, lose, fouled, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortPass -> pcase {
@@ -182,12 +182,12 @@ Mid(sp, lp, ls, lose, fouled, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 |
 	lose-fouled: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 	// implement back pass 
-} [] [(atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1) && memMid[p]==0]shortBackPass -> pcase {
-	sp: pass -> UpdatePos(p, SP); UpdateMem(MID, p); AtkDef
+} [] [(atkMidDefPos[p-2] == 1 || atkMidDefPos[p-1] == 1 || atkMidDefPos[p] == 1 || atkMidDefPos[p+1] == 1 || atkMidDefPos[p+2] == 1) && memMid[p]==0]shortBackPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); UpdateMem(MID, p); AtkMidDef
 	lose-fouled: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
-} [] [(atkDefPos[p-6] == 1 || atkDefPos[p-5] == 1 || atkDefPos[p-4] == 1 ||atkDefPos[p-3] == 1 || atkDefPos[p+3] == 1 || atkDefPos[p+4] == 1 || atkDefPos[p+5] == 1 || atkDefPos[p+6] == 1)  && memMid[p]==0]longBackPass -> pcase {
-	lp: pass -> UpdatePos(p, LP); UpdateMem(MID, p);AtkDef
+} [] [(atkMidDefPos[p-6] == 1 || atkMidDefPos[p-5] == 1 || atkMidDefPos[p-4] == 1 ||atkMidDefPos[p-3] == 1 || atkMidDefPos[p+3] == 1 || atkMidDefPos[p+4] == 1 || atkMidDefPos[p+5] == 1 || atkMidDefPos[p+6] == 1)  && memMid[p]==0]longBackPass -> pcase {
+	lp: pass -> UpdatePos(p, LP); UpdateMem(MID, p);AtkMidDef
 	lose-fouled: tackled{danger = 3;} -> Skip
 	fouled: foul -> AtkFreeKickMid
 	// implement side pass
@@ -281,6 +281,7 @@ UpdatePos(p, e) = case {
 		case {
 			e == SP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 			e == LP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
+			e == DR: {pos[L] = 1; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 		}
 	p == LR:
@@ -294,6 +295,7 @@ UpdatePos(p, e) = case {
 		case {
 			e == SP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 1; pos[RL] = 0; pos[R] = 0;} -> Skip
 			e == LP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 1; pos[R] = 1;} -> Skip
+			e == DR: {pos[L] = 0; pos[LR] = 0; pos[CL] = 1; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 		}
 	p == C:
@@ -307,6 +309,7 @@ UpdatePos(p, e) = case {
 		case {
 			e == SP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 1; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
 			e == LP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			e == DR: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 1; pos[RL] = 0; pos[R] = 0;} -> Skip
 			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
 		}
 	p == RL:
