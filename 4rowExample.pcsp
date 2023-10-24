@@ -27,9 +27,9 @@ var inAir = false;
 var danger = 0;
 
 // Actions based on FIFA player ratings
-// ShortPass, LongPass, LongShot, Finishing, Volley, and Header
+// ShortPass, LongPass, LongShot, Finishing, Volley, Header, Dribbling
 enum {SP, LP, LS, FI, VO, HD, DR};
-enum {DEF, MIDDEF, MID, FOR};
+enum {DEF, MIDDEF, MID, FOR}; //MIDDEF stand for Defensive Midfielder position
 // Match URL: https://www.premierleague.com/match/12115
 
 // Soccer field grid
@@ -44,40 +44,42 @@ var defKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
 
 ///////////// AWAY TEAM PLAYERS (Attacking Team) /////////////
 // The parameters represent the probabilities specific to the player 
-// The gurad only allows eligible players to get the ball, see Individual Positions section for more info
+// The guard only allows eligible players to get the ball, see Individual Positions section for more info
 
 // For example keepers can only ShortPass or LongPass
 // Here 64, 64 represents the FIFA ShortPass and LongPass ratings for this particular player
 AtkKep = [pos[C] == 1]Kep_1(64, 64, C);
 
-// Here for the defenders, the first 3 parameters are with respect to the ShortPass, LongPass, and prob. to lose the ball respectively 
+// parameters are ShortPass, LongPass, prob. to lose possession, prob. to be fouled,position
 // The prob. to lose the ball for the attacking team's defenders was calculated based on the defending team forward's player ratings 
 // In particular, the probability to lose the ball(k here, 3rd parameter here) was a weighted combination of the standing tackle, sliding tackle, and interception FIFA player ratings of the forwards
-// The prob. of a foul on the attacking team's defenders was calculated based on the defending team forward's player mentality_positioning ratings. A Higher mentality_positioning rating reduces the chances of a foul. 
-AtkDef = [pos[R] == 1]Def(73, 71, 38, 15, R) [] [pos[CR] == 1]Def(68, 63, 38, 15, CR) [] [pos[CL] == 1]Def(68, 63, 38, 15, CL) [] [pos[L] == 1]Def(72, 59, 38, 15, L);
-
-// parameter is determined by the highest long pass amongst the attacking team's defenders
+// The prob. of a foul on the attacking team's defenders was calculated based on the defending team forward's player mentality_aggression ratings. A Higher mentality_aggression rating increases the chances of a foul. 
+AtkDef = [pos[R] == 1]Def(73, 71, 38, 15, R) [] [pos[CR] == 1]Def(68, 63, 38, 15, CR) [] [pos[CL] == 1]Def(68, 63, 38, 15, CL) [] [pos[L] == 1]Def(72, 59, 38, 15, L)
+// parameter is determined by the highest long_pass amongst the attacking team's defenders
 AtkFreeKickDef = [pos[R] == 1]FKDef(80, R) [] [pos[CR] == 1]FKDef(80, CR) [] [pos[CL] == 1]FKDef(80, CL) [] [pos[L] == 1]FKDef(80, L);
 
-AtkMidDef = [pos[CR] == 1]MidDef(73, 71, 38, 15, CR) [] [pos[CL] == 1]MidDef(68, 63, 38, 15, CL);
 // Similar to defenders, midfielders and forwards have their own specific parameters
 // See their processes below for more information on what those parameters are
-// The prob. to lose for the attacking team's midfielders is based on the defending team's midfielders(l here, fourth parameter here, k means long shot prob which is third parameter)
-// The prob. to lose for the attacking team's forwards is based on the defending team's defenders(m here, fifth parameter here, i, j, k, l means finishing, long shot, volley, header prob which are all shots)
+// The prob. to lose for the attacking team's midfielders is based on the defending team's defendsive midfielders
+// The prob. to lose for the attacking team's defensive midfielders is based on the defending team's midfielders
+// The prob. to lose for the attacking team's forwards is based on the defending team's defenders
 
+//parameters are ShortPass,LongPass, prob. to lose posession, prob. to be fouled, position
+AtkMidDef = [pos[CR] == 1]MidDef(73, 71, 38, 15, CR) [] [pos[CL] == 1]MidDef(68, 63, 38, 15, CL);
 // parameter is determined by the highest skill_fk_accuracy amongst the attacking team's defensive midfielders
 AtkFreeKickMidDef = [pos[CR] == 1]FKMidDef(73,CR) [] [pos[CL] == 1]FKMidDef(68,CL);
 
+//parameters are ShortPass, LongPass,LongShot, prob. to lose posession,prob. to be fouled,position
 AtkMid = [pos[RL] == 1]Mid(79, 76, 74, 59, 10, RL) [] [pos[C] == 1]Mid(83, 80, 57, 59, 10, C) [] [pos[LR] == 1]Mid(78, 73, 75, 59, 10, LR);
-
 // parameter is determined by the highest skill_fk_accuracy amongst the attacking team's attacking midfielders
 AtkFreeKickMid = [pos[RL] == 1]FKMid(80, RL) [] [pos[C] == 1]FKMid(80, C) [] [pos[LR] == 1]FKMid(80, LR);
 
+//parameters are Shortpass, longpass, finishing, longshot, volley, header, dribbling, prob. to lose posession, prob. to be fouled,position
 AtkFor =   [pos[C] == 1]For(70,54,75, 73, 66, 76,78, 75, 10, C);
-
 AtkFreeKickFor = [pos[C] == 1]FKFor(80, C);
 ///////////// HOME TEAM PLAYERS (Defending Team) /////////////
 // Home team defenders, midfielders and forwards are already implicitly "defending" via the prob. to lose the ball parameter
+//parameters are gk_handling
 DefKep = [pos[C] == 1]Kep_2(72, C);
 
 ///////////// Individual Positions /////////////
@@ -214,10 +216,9 @@ FKMid(successful, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[
 
 #define probFactor(rating, dist) rating + call(Pow, 2, 4 - dist);
 
-// add d, as dribbling
 // currently only forwards move with dribbling, 
 //The closer to the goal, the higher the chance of scoring
-For(sp, lp, fi, ls, vo, hd, lose, dr, fouled, p) = [defKepPos[C] == 1 && distToKep[p] == 1]finish -> pcase {
+For(sp, lp, fi, ls, vo, hd, dr,lose, fouled, p) = [defKepPos[C] == 1 && distToKep[p] == 1]finish -> pcase {
 	call(probFactor, fi, distToKep[p]): shoot -> UpdatePos(p, FI); DefKep
 	lose-fouled: tackled{danger = 2;} -> Skip
 	fouled: foul -> AtkFreeKickFor
@@ -260,7 +261,7 @@ Kep_2(i, p) = attemptSave -> pcase {
 	100-i: concede -> Skip
 };
 
-// type 1 is defender, 2 is midfielder, 3 is forward.
+// type 1 is defender, 2 is defensive midfielder, 3 is midfielder, 4 is forward.
 // here assume each player can only pass either side or back pass for once.
 // pos is relative pos of each type of player in a row, counting from left to right.
 UpdateMem(type, player_pos) = case {
