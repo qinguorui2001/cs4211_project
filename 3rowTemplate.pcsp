@@ -69,7 +69,7 @@ AtkFreeKickMid =
 
 // parameters are the ShortPass,LongPass,finishing,longshot,volley,header, dribbling,prob. to lose possession,  prob. to be fouled, position
 AtkFor =
-// parameter is determined by the highest skill_fk_accuracy amongst the attacking team's midfielders
+// parameter is determined by the highest skill_fk_accuracy amongst the attacking team's forwards
 AtkFreeKickFor = 
 
 ///////////// HOME TEAM PLAYERS (Defending Team) /////////////
