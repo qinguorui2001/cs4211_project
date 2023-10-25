@@ -19,7 +19,7 @@ def readfile(season):
         print("error: {} does not exist".format(template_file_4f))
         sys.exit(1)
     
-    math_url_arr = []
+    match_url_arr = []
     
     # Generate PCSP files
     for index, row in df_match.iterrows():
