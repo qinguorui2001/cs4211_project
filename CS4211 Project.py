@@ -109,7 +109,7 @@ def readfile(season):
             lines[atk_kep_line_number - 1] = f"AtkKep = [pos[C] == 1]Kep_1({short_pass_rating}, {long_pass_rating}, C);\n"
 
             # Update the score of a DefKep row
-            lines[def_kep_line_number - 1] = f"DefKep = [pos[C] == 1]Kep_2({short_pass_rating}, C);\n"  # 这里我用了short_pass_rating，你可以根据需要更改
+            lines[def_kep_line_number - 1] = f"DefKep = [pos[C] == 1]Kep_2({short_pass_rating}, C);\n"
 
             # write back file
             with open(out_file, 'w') as file:
