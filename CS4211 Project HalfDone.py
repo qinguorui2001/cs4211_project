@@ -139,7 +139,7 @@ def modify_atkFor(num_level, curr_team, lines, atk_for_line, atk_freekick_for_li
             #TODO modify forward ratings in pcsp file
                 for_ratings_row = df_ratings.loc[(df_ratings['club_name'] == curr_team) & (df_ratings['long_name'] == forwardNamesHome[ind])].values
                 sp = for_ratings_row[0]['attacking_short_passing']
-                lp = for_ratings_row[0]['attacking_long_passing']
+                lp = for_ratings_row[0]['skill_long_passing']
                 ls = for_ratings_row[0]['power_long_shots']
                 fi = for_ratings_row[0]['attacking_finishing']
                 vo = for_ratings_row[0]['attacking_volleys']
@@ -185,7 +185,7 @@ def modify_atkMidDef(curr_team, lines, atk_middef_line, atk_freekick_middef_line
                 #TODO modify midfielder ratings in pcsp file
                 middef_ratings_row = df_ratings.loc[(df_ratings['club_name'] == curr_team) & (df_ratings['long_name'] == midDefNamesHome[ind])].values
                 sp = middef_ratings_row[0]['attacking_short_passing']
-                lp = middef_ratings_row[0]['attacking_long_passing']
+                lp = middef_ratings_row[0]['skill_long_passing']
                 if (pos == "L"):
                     lines[40 - 1] = lines[40 - 1][24:] + "1" + lines[40 - 1][:25]
                 elif (pos == "LR"):
@@ -306,8 +306,8 @@ def readfile(season):
             #TODO modify Goalkeeper ratings in pcsp file
             #home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home)].values
             gk_home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) and (df_ratings['long_name'] == goalkeeperNameHome)].values
-            short_pass_rating = gk_home_ratings_row[0]['short_passing']
-            long_pass_rating = gk_home_ratings_row[0]['long_passing']
+            short_pass_rating = gk_home_ratings_row[0]['skill_short_passing']
+            long_pass_rating = gk_home_ratings_row[0]['skill_long_passing']
 
             gk_away_ratings_row = df_ratings.loc[(df_ratings['club_name'] == away) and (df_ratings['long_name'] == goalkeeperNameAway)].values
             gk_handling_rating = gk_away_ratings_row[0]['gk_handling']
@@ -355,7 +355,7 @@ def readfile(season):
             prob_to_lose_home_defenders, aggression_home_defenders = create_prob_to_lose(defenderNamesHome, df_ratings, home)
             
 
-            freekick_def_away = create_free_kick_rating(defenderNamesAway, df_ratings, away, 'long_passing')
+            freekick_def_away = create_free_kick_rating(defenderNamesAway, df_ratings, away, 'skill_long_passing')
             freekick_mid_away = create_free_kick_rating(midfielderNamesAway, df_ratings, away, 'skill_fk_accuracy')
             freekick_for_away = create_free_kick_rating(forwardNamesAway, df_ratings, away, 'skill_fk_accuracy')
 
@@ -407,8 +407,8 @@ def readfile(season):
             #TODO modify Goalkeeper ratings in pcsp file
             #home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home)].values
             gk_home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) and (df_ratings['long_name'] == goalkeeperNameHome)].values
-            short_pass_rating = gk_home_ratings_row[0]['short_passing']
-            long_pass_rating = gk_home_ratings_row[0]['long_passing']
+            short_pass_rating = gk_home_ratings_row[0]['skill_short_passing']
+            long_pass_rating = gk_home_ratings_row[0]['skill_long_passing']
 
 
 
@@ -440,8 +440,8 @@ def readfile(season):
             prob_to_lose_away_midfielders,  aggression_away_midfielders = create_prob_to_lose(midfielderNamesAway, df_ratings, away)
             prob_to_lose_away_defenders, aggression_away_defenders = create_prob_to_lose(defenderNamesAway, df_ratings, away)
             
-            freekick_def_home = create_free_kick_rating(defenderNamesHome, df_ratings, home, 'attacking_long_passing')
-            freekick_middef_home = create_free_kick_rating(midDefNamesHome, df_ratings, home, 'attacking_long_passing')     
+            freekick_def_home = create_free_kick_rating(defenderNamesHome, df_ratings, home, 'skill_long_passing')
+            freekick_middef_home = create_free_kick_rating(midDefNamesHome, df_ratings, home, 'skill_long_passing')     
             freekick_mid_home = create_free_kick_rating(midfielderNamesHome, df_ratings, home, 'skill_fk_accuracy')
             freekick_for_home = create_free_kick_rating(forwardNamesHome, df_ratings, home, 'skill_fk_accuracy')
 
@@ -520,8 +520,8 @@ def readfile(season):
             #TODO modify Goalkeeper ratings in pcsp file
             #home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home)].values
             gk_home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) and (df_ratings['long_name'] == goalkeeperNameHome)].values
-            short_pass_rating = gk_home_ratings_row[0]['short_passing']
-            long_pass_rating = gk_home_ratings_row[0]['long_passing']
+            short_pass_rating = gk_home_ratings_row[0]['skill_short_passing']
+            long_pass_rating = gk_home_ratings_row[0]['skill_long_passing']
             gk_away_ratings_row = df_ratings.loc[(df_ratings['club_name'] == away) and (df_ratings['long_name'] == goalkeeperNameAway)].values
             gk_handling_rating = gk_away_ratings_row[0]['gk_handling']
             # Define the line number of AtkKep and DefKep in the file
@@ -624,8 +624,8 @@ def readfile(season):
             #TODO modify Goalkeeper ratings in pcsp file
             #home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home)].values
             gk_home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home) and (df_ratings['long_name'] == goalkeeperNameHome)].values
-            short_pass_rating = gk_home_ratings_row[0]['short_passing']
-            long_pass_rating = gk_home_ratings_row[0]['long_passing']
+            short_pass_rating = gk_home_ratings_row[0]['skill_short_passing']
+            long_pass_rating = gk_home_ratings_row[0]['skill_long_passing']
             gk_away_ratings_row = df_ratings.loc[(df_ratings['club_name'] == away) and (df_ratings['long_name'] == goalkeeperNameAway)].values
             gk_handling_rating = gk_away_ratings_row[0]['gk_handling']
             # Define the line number of AtkKep and DefKep in the file
