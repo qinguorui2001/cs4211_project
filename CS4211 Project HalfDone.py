@@ -58,19 +58,19 @@ def modify_atkDef(curr_team, lines, atk_def_line, atk_freekick_def_line, defende
                 sp = def_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
                 lp = def_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
                 if (pos == "L"):
-                    lines[39 - 1] = lines[39 - 1][24:] + "1" + lines[39 - 1][:25]
+                    lines[39 - 1] = lines[39 - 1][:24] + "1" + lines[39 - 1][25:]
                 elif (pos == "LR"):
-                    lines[39 - 1] = lines[39 - 1][27:] + "1" + lines[39 - 1][:28]
+                    lines[39 - 1] = lines[39 - 1][:27] + "1" + lines[39 - 1][28:]
                 elif (pos == "CL"):
-                    lines[39 - 1] = lines[39 - 1][30:] + "1" + lines[39 - 1][:31]
+                    lines[39 - 1] = lines[39 - 1][:30] + "1" + lines[39 - 1][31:]
                 elif (pos == "C"):
-                    lines[39 - 1] = lines[39 - 1][33:] + "1" + lines[39 - 1][:34]
+                    lines[39 - 1] = lines[39 - 1][:33] + "1" + lines[39 - 1][34:]
                 elif (pos == "CR"):
-                    lines[39 - 1] = lines[39 - 1][36:] + "1" + lines[39 - 1][:37]
+                    lines[39 - 1] = lines[39 - 1][:36] + "1" + lines[39 - 1][37:]
                 elif (pos == "RL"):
-                    lines[39 - 1] = lines[39 - 1][39:] + "1" + lines[39 - 1][:40]
+                    lines[39 - 1] = lines[39 - 1][:39] + "1" + lines[39 - 1][40:]
                 elif (pos == "R"):
-                    lines[39 - 1] = lines[39 - 1][42:] + "1" + lines[39 - 1][:43]
+                    lines[39 - 1] = lines[39 - 1][:42] + "1" + lines[39 - 1][43:]
                 else:
                     print("wrong position")
                     sys.exit(1)
@@ -98,19 +98,19 @@ def modify_atkMid(num_level, curr_team, lines, atk_mid_line, atk_freekick_mid_li
                 lp = mid_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
                 ls = mid_ratings_row[0][df_ratings.columns.get_loc('power_long_shots')]
                 if (pos == "L"):
-                    lines[num_line - 1] = lines[num_line - 1][24:] + "1" + lines[num_line - 1][:25]
+                    lines[num_line - 1] = lines[num_line - 1][:24] + "1" + lines[num_line - 1][25:]
                 elif (pos == "LR"):
-                    lines[num_line - 1] = lines[num_line - 1][27:] + "1" + lines[num_line - 1][:28]
+                    lines[num_line - 1] = lines[num_line - 1][:27] + "1" + lines[num_line - 1][28:]
                 elif (pos == "CL"):
-                    lines[num_line - 1] = lines[num_line - 1][30:] + "1" + lines[num_line - 1][:31]
+                    lines[num_line - 1] = lines[num_line - 1][:30] + "1" + lines[num_line - 1][31:]
                 elif (pos == "C"):
-                    lines[num_line - 1] = lines[num_line - 1][33:] + "1" + lines[num_line - 1][:34]
+                    lines[num_line - 1] = lines[num_line - 1][:33] + "1" + lines[num_line - 1][34:]
                 elif (pos == "CR"):
-                    lines[num_line - 1] = lines[num_line - 1][36:] + "1" + lines[num_line - 1][:37]
+                    lines[num_line - 1] = lines[num_line - 1][:36] + "1" + lines[num_line - 1][37:]
                 elif (pos == "RL"):
-                    lines[num_line - 1] = lines[num_line - 1][39:] + "1" + lines[num_line - 1][:40]
+                    lines[num_line - 1] = lines[num_line - 1][:39] + "1" + lines[num_line - 1][40:]
                 elif (pos == "R"):
-                    lines[num_line - 1] = lines[num_line - 1][42:] + "1" + lines[num_line - 1][:43]
+                    lines[num_line - 1] = lines[num_line - 1][:42] + "1" + lines[num_line - 1][43:]
                 else:
                     print("wrong position")
                     sys.exit(1)
@@ -145,26 +145,26 @@ def modify_atkFor(num_level, curr_team, lines, atk_for_line, atk_freekick_for_li
                 dr = for_ratings_row[0][df_ratings.columns.get_loc('skill_dribbling')]
                 he = for_ratings_row[0][df_ratings.columns.get_loc('attacking_heading_accuracy')]
                 if (pos == "L"):
-                    lines[num_line1 - 1] = lines[num_line1 - 1][24:] + "1" + lines[num_line1 - 1][:25]
-                    lines[num_line2 - 1] = lines[num_line2  - 1][24:] + "4" + lines[num_line2  - 1][:25]
+                    lines[num_line1 - 1] = lines[num_line1 - 1][:24] + "1" + lines[num_line1 - 1][25:]
+                    lines[num_line2 - 1] = lines[num_line2  - 1][:27] + "4" + lines[num_line2  - 1][28:]
                 elif (pos == "LR"):
-                    lines[num_line1 - 1] = lines[num_line1 - 1][27:] + "1" + lines[num_line1 - 1][:28]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][27:] + "4" + lines[num_line2  - 1][:28]
+                    lines[num_line1 - 1] = lines[num_line1 - 1][:27] + "1" + lines[num_line1 - 1][28:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:30] + "4" + lines[num_line2  - 1][31:]
                 elif (pos == "CL"):
-                    lines[num_line1 - 1] = lines[num_line1 - 1][30:] + "1" + lines[num_line1 - 1][:31]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][30:] + "4" + lines[num_line2  - 1][:31]
+                    lines[num_line1 - 1] = lines[num_line1 - 1][:30] + "1" + lines[num_line1 - 1][31:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:33] + "4" + lines[num_line2  - 1][34:]
                 elif (pos == "C"):
-                    lines[num_line1 - 1] = lines[num_line1 - 1][33:] + "1" + lines[num_line1 - 1][:34]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][33:] + "4" + lines[num_line2  - 1][:34]
+                    lines[num_line1 - 1] = lines[num_line1 - 1][:33] + "1" + lines[num_line1 - 1][34:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:36] + "4" + lines[num_line2  - 1][37:]
                 elif (pos == "CR"):
-                    lines[num_line1 - 1] = lines[num_line1 - 1][36:] + "1" + lines[num_line1 - 1][:37]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][36:] + "4" + lines[num_line2  - 1][:37]
+                    lines[num_line1 - 1] = lines[num_line1 - 1][:36] + "1" + lines[num_line1 - 1][37:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:39] + "4" + lines[num_line2  - 1][40:]
                 elif (pos == "RL"):
-                    lines[num_line1 - 1] = lines[num_line1 - 1][39:] + "1" + lines[num_line1 - 1][:40]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][39:] + "4" + lines[num_line2  - 1][:40]
+                    lines[num_line1 - 1] = lines[num_line1 - 1][:39] + "1" + lines[num_line1 - 1][40:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:42] + "4" + lines[num_line2  - 1][43:]
                 elif (pos == "R"):
-                    lines[num_line1 - 1] = lines[num_line1 - 1][42:] + "1" + lines[num_line1 - 1][:43]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][42:] + "1" + lines[num_line2  - 1][:43]
+                    lines[num_line1 - 1] = lines[num_line1 - 1][:42] + "1" + lines[num_line1 - 1][43:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:45] + "1" + lines[num_line2  - 1][46:]
                 else:
                     print("wrong position")
                     sys.exit(1)
@@ -186,19 +186,19 @@ def modify_atkMidDef(curr_team, lines, atk_middef_line, atk_freekick_middef_line
                 sp = middef_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
                 lp = middef_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
                 if (pos == "L"):
-                    lines[40 - 1] = lines[40 - 1][24:] + "1" + lines[40 - 1][:25]
+                    lines[40 - 1] = lines[40 - 1][:27] + "1" + lines[40 - 1][28:]
                 elif (pos == "LR"):
-                    lines[40 - 1] = lines[40 - 1][27:] + "1" + lines[40 - 1][:28]
+                    lines[40 - 1] = lines[40 - 1][:30] + "1" + lines[40 - 1][31:]
                 elif (pos == "CL"):
-                    lines[40 - 1] = lines[40 - 1][30:] + "1" + lines[40 - 1][:31]
+                    lines[40 - 1] = lines[40 - 1][:33] + "1" + lines[40 - 1][34:]
                 elif (pos == "C"):
-                    lines[40 - 1] = lines[40 - 1][33:] + "1" + lines[40 - 1][:34]
+                    lines[40 - 1] = lines[40 - 1][:36] + "1" + lines[40 - 1][37:]
                 elif (pos == "CR"):
-                    lines[40 - 1] = lines[40 - 1][36:] + "1" + lines[40 - 1][:37]
+                    lines[40 - 1] = lines[40 - 1][:39] + "1" + lines[40 - 1][40:]
                 elif (pos == "RL"):
-                    lines[40 - 1] = lines[40 - 1][39:] + "1" + lines[40 - 1][:40]
+                    lines[40 - 1] = lines[40 - 1][:42] + "1" + lines[40 - 1][43:]
                 elif (pos == "R"):
-                    lines[40 - 1] = lines[40 - 1][42:] + "1" + lines[40 - 1][:43]
+                    lines[40 - 1] = lines[40 - 1][:45] + "1" + lines[40 - 1][46:]
                 else:
                     print("wrong position")
                     sys.exit(1)
@@ -258,13 +258,13 @@ def readfile(season):
         #address formatting issue for formations
         # if "/" in home_fmn: #means 3 levels
         if len(home_fmn) == 5: #means 3 levels
-            #print("Is 3 levels Home")
+            # print("Is 3 levels Home")
             is3levels_home = True
             # posArray = home_fmn.split('/')
             posArray = home_fmn.split('-')
             def_H,mid_H, for_H = int(posArray[0]),int(posArray[1]), int(posArray[2]) - 2000 
         else: #means 4 levels
-            #print("Is 4 levels")
+            # print("Is 4 levels")
             is4levels_home = True
             posArray = home_fmn.split('-')
             def_4H,midDef_4H, mid_4H, for_4H = int(posArray[0]),int(posArray[1]),int(posArray[2]), int(posArray[3])
@@ -284,22 +284,22 @@ def readfile(season):
             homePositions = home_seq.split(',')
             home_team = home_team.split(',')
             goalkeeperNameHome = home_team[0]
-            defenderPositionsHome = homePositions[1:def_H]
-            defenderNamesHome = home_team[1:def_H]
-            midfielderPositionsHome = homePositions[def_H:def_H +mid_H]
-            midfielderNamesHome = home_team[def_H:def_H +mid_H]
-            forwardPositionsHome = homePositions[def_H+mid_H:]
-            forwardNamesHome = home_team[def_H+mid_H:]
+            defenderPositionsHome = homePositions[1:1 + def_H]
+            defenderNamesHome = home_team[1:1 + def_H]
+            midfielderPositionsHome = homePositions[1 + def_H:1 + def_H +mid_H]
+            midfielderNamesHome = home_team[1 + def_H:1 + def_H +mid_H]
+            forwardPositionsHome = homePositions[1 + def_H+mid_H:]
+            forwardNamesHome = home_team[1 + def_H+mid_H:]
             
             awayPositions = away_seq.split(',')
             away_team = away_team.split(',')
             goalkeeperNameAway = away_team[0]
-            defenderPositionsAway = awayPositions[1:def_A]
-            defenderNamesAway = away_team[1:def_A]
-            midfielderPositionsAway = awayPositions[def_A:def_A +mid_A]
-            midfielderNamesAway = away_team[def_A:def_A +mid_A]
-            forwardPositionsAway = awayPositions[def_A+mid_A:]
-            forwardNamesAway = away_team[def_A + mid_A:]
+            defenderPositionsAway = awayPositions[1:1 + def_A]
+            defenderNamesAway = away_team[1:1 + def_A]
+            midfielderPositionsAway = awayPositions[1 + def_A:1 + def_A +mid_A]
+            midfielderNamesAway = away_team[1 + def_A:1 + def_A +mid_A]
+            forwardPositionsAway = awayPositions[1 + def_A+mid_A:]
+            forwardNamesAway = away_team[1 + def_A + mid_A:]
             ##generate home pcsp file using 3 levels template
             
             
@@ -384,26 +384,26 @@ def readfile(season):
             homePositions = home_seq.split(',')
             home_team = home_team.split(',')
             goalkeeperNameHome = home_team[0]
-            defenderPositionsHome = homePositions[1:def_4H]
-            defenderNamesHome = home_team[1:def_4H]
-            midDefPositionsHome = homePositions[def_4H:def_4H +midDef_4H]
-            midDefNamesHome = home_team[def_4H:def_4H +midDef_4H]
-            midfielderPositionsHome = homePositions[def_4H + midDef_4H:def_4H +midDef_4H + mid_4H]
-            midfielderNamesHome = home_team[def_4H + midDef_4H:def_4H +midDef_4H + mid_4H]
-            forwardPositionsHome = homePositions[def_4H +midDef_4H + mid_4H:]
-            forwardNamesHome = home_team[def_4H +midDef_4H + mid_4H:]
+            defenderPositionsHome = homePositions[1:1 + def_4H]
+            defenderNamesHome = home_team[1:1 + def_4H]
+            midDefPositionsHome = homePositions[1 + def_4H:1 + def_4H +midDef_4H]
+            midDefNamesHome = home_team[1 + def_4H:1 + def_4H +midDef_4H]
+            midfielderPositionsHome = homePositions[1 + def_4H + midDef_4H:1 + def_4H +midDef_4H + mid_4H]
+            midfielderNamesHome = home_team[1 + def_4H + midDef_4H:1 + def_4H +midDef_4H + mid_4H]
+            forwardPositionsHome = homePositions[1 + def_4H +midDef_4H + mid_4H:]
+            forwardNamesHome = home_team[1 + def_4H +midDef_4H + mid_4H:]
             
             awayPositions = away_seq.split(',')
             away_team = away_team.split(',')
             goalkeeperNameAway = away_team[0]
-            defenderPositionsAway = awayPositions[1:def_4A]
-            defenderNamesAway = away_team[1:def_4A]
-            midDefPositionsAway = awayPositions[def_4A:def_4A +midDef_4A]
-            midDefNamesAway = away_team[def_4A:def_4A +midDef_4A]
-            midfielderPositionsAway = awayPositions[def_4A +midDef_4A:def_4A +midDef_4A +mid_4A]
-            midfielderNamesAway = away_team[def_4A:def_4A +midDef_4A +mid_4A]
-            forwardPositionsAway = awayPositions[def_4A +midDef_4A +mid_4A:]
-            forwardNamesAway = away_team[def_4A +midDef_4A +mid_4A:]
+            defenderPositionsAway = awayPositions[1:1 + def_4A]
+            defenderNamesAway = away_team[1:1 + def_4A]
+            midDefPositionsAway = awayPositions[1 + def_4A:1 + def_4A +midDef_4A]
+            midDefNamesAway = away_team[1 + def_4A:1 + def_4A +midDef_4A]
+            midfielderPositionsAway = awayPositions[1 + def_4A +midDef_4A:1 + def_4A +midDef_4A +mid_4A]
+            midfielderNamesAway = away_team[1 + def_4A:1 + def_4A +midDef_4A +mid_4A]
+            forwardPositionsAway = awayPositions[1 + def_4A +midDef_4A +mid_4A:]
+            forwardNamesAway = away_team[1 + def_4A +midDef_4A +mid_4A:]
             
             
             out_file, lines = create_template_files(home, away, season, template_file_4f)
@@ -498,24 +498,24 @@ def readfile(season):
             homePositions = home_seq.split(',')
             home_team = home_team.split(',')
             goalkeeperNameHome = home_team[0]
-            defenderPositionsHome = homePositions[1:def_H]
-            defenderNamesHome = home_team[1:def_H]
-            midfielderPositionsHome = homePositions[def_H:def_H +mid_H]
-            midfielderNamesHome = home_team[def_H:def_H +mid_H]
-            forwardPositionsHome = homePositions[def_H+mid_H:]
-            forwardNamesHome = home_team[def_H+mid_H:]
+            defenderPositionsHome = homePositions[1:1 + def_H]
+            defenderNamesHome = home_team[1:1 + def_H]
+            midfielderPositionsHome = homePositions[1 + def_H:1 + def_H +mid_H]
+            midfielderNamesHome = home_team[1 + def_H:1 + def_H +mid_H]
+            forwardPositionsHome = homePositions[1 + def_H+mid_H:]
+            forwardNamesHome = home_team[1 + def_H+mid_H:]
             
             awayPositions = away_seq.split(',')
             away_team = away_team.split(',')
             goalkeeperNameAway = away_team[0]
-            defenderPositionsAway = awayPositions[1:def_4A]
-            defenderNamesAway = away_team[1:def_4A]
-            midDefPositionsAway = awayPositions[def_4A:def_4A +midDef_4A]
-            midDefNamesAway = away_team[def_4A:def_4A +midDef_4A]
-            midfielderPositionsAway = awayPositions[def_4A +midDef_4A:def_4A +midDef_4A +mid_4A]
-            midfielderNamesAway = away_team[def_4A:def_4A +midDef_4A +mid_4A]
-            forwardPositionsAway = awayPositions[def_4A +midDef_4A +mid_4A:]
-            forwardNamesAway = away_team[def_4A +midDef_4A +mid_4A:]
+            defenderPositionsAway = awayPositions[1:1 + def_4A]
+            defenderNamesAway = away_team[1:1 + def_4A]
+            midDefPositionsAway = awayPositions[1 + def_4A:1 + def_4A +midDef_4A]
+            midDefNamesAway = away_team[1 + def_4A:1 + def_4A +midDef_4A]
+            midfielderPositionsAway = awayPositions[1 + def_4A +midDef_4A:1 + def_4A +midDef_4A +mid_4A]
+            midfielderNamesAway = away_team[1 + def_4A:1 + def_4A +midDef_4A +mid_4A]
+            forwardPositionsAway = awayPositions[1 + def_4A +midDef_4A +mid_4A:]
+            forwardNamesAway = away_team[1 + def_4A +midDef_4A +mid_4A:]
             ##generate home pcsp file using 3 levels template
             
             
@@ -601,24 +601,24 @@ def readfile(season):
             awayPositions = away_seq.split(',')
             away_team = away_team.split(',')
             goalkeeperNameAway = away_team[0]
-            defenderPositionsAway = awayPositions[1:def_A]
-            defenderNamesAway = away_team[1:def_A]
-            midfielderPositionsAway = awayPositions[def_A:def_A +mid_A]
-            midfielderNamesAway = away_team[def_A:def_A +mid_A]
-            forwardPositionsAway = awayPositions[def_A+mid_A:]
-            forwardNamesAway = away_team[def_A+mid_A:]
+            defenderPositionsAway = awayPositions[1:1 + def_A]
+            defenderNamesAway = away_team[1:1 + def_A]
+            midfielderPositionsAway = awayPositions[1 + def_A:1 + def_A +mid_A]
+            midfielderNamesAway = away_team[1 + def_A:1 + def_A +mid_A]
+            forwardPositionsAway = awayPositions[1 + def_A+mid_A:]
+            forwardNamesAway = away_team[1 + def_A+mid_A:]
             
             homePositions = home_seq.split(',')
             home_team = home_team.split(',')
             goalkeeperNameHome = home_team[0]
-            defenderPositionsHome = homePositions[1:def_4H]
-            defenderNamesHome = home_team[1:def_4H]
-            midDefPositionsHome = homePositions[def_4H:def_4H +midDef_4H]
-            midDefNamesHome = home_team[def_4H:def_4H +midDef_4H]
-            midfielderPositionsHome = homePositions[def_4H + midDef_4H:def_4H +midDef_4H + mid_4H]
-            midfielderNamesHome = home_team[def_4H + midDef_4H:def_4H +midDef_4H + mid_4H]
-            forwardPositionsHome = homePositions[def_4H +midDef_4H + mid_4H:]
-            forwardNamesHome = home_team[def_4H +midDef_4H + mid_4H:]
+            defenderPositionsHome = homePositions[1:1 + def_4H]
+            defenderNamesHome = home_team[1:1 + def_4H]
+            midDefPositionsHome = homePositions[1 + def_4H:1 + def_4H +midDef_4H]
+            midDefNamesHome = home_team[1 + def_4H:1 + def_4H +midDef_4H]
+            midfielderPositionsHome = homePositions[1 + def_4H + midDef_4H:1 + def_4H +midDef_4H + mid_4H]
+            midfielderNamesHome = home_team[1 + def_4H + midDef_4H:1 + def_4H +midDef_4H + mid_4H]
+            forwardPositionsHome = homePositions[1 + def_4H +midDef_4H + mid_4H:]
+            forwardNamesHome = home_team[1 + def_4H +midDef_4H + mid_4H:]
 
             
             out_file, lines = create_template_files(home, away, season, template_file_4f)
