@@ -76,11 +76,13 @@ def modify_atkDef(curr_team, lines, atk_def_line, atk_freekick_def_line, defende
                     sys.exit(1)
                 #TODO modify defender ratings in pcsp file
                 if ind == 0:
-                    lines[atk_def_line] = lines[atk_def_line] + f"[pos[{pos}] == 1]Def({sp, lp, prob_to_lose_away_forwards, aggression_away_forwards, pos})"
-                    lines[atk_freekick_def_line] = lines[atk_freekick_def_line] + f"[pos[{pos}] == 1]FKDef({freekick_def_home, pos})"
+                    lines[atk_def_line] = lines[atk_def_line] + f"[pos[{pos}] == 1]Def{sp, lp, prob_to_lose_away_forwards, aggression_away_forwards, pos}"
+                    lines[atk_freekick_def_line] = lines[atk_freekick_def_line] + f"[pos[{pos}] == 1]FKDef{freekick_def_home, pos}"
                 else:
-                    lines[atk_def_line] = lines[atk_def_line] + f"[] [pos[{pos}] == 1]Def({sp, lp, prob_to_lose_away_forwards, aggression_away_forwards, pos})"
-                    lines[atk_freekick_def_line] = lines[atk_freekick_def_line] + f"[] [pos[{pos}] == 1]FKDef({freekick_def_home, pos})"
+                    lines[atk_def_line] = lines[atk_def_line] + f"[] [pos[{pos}] == 1]Def{sp, lp, prob_to_lose_away_forwards, aggression_away_forwards, pos}"
+                    lines[atk_freekick_def_line] = lines[atk_freekick_def_line] + f"[] [pos[{pos}] == 1]FKDef{freekick_def_home, pos}"
+            lines[atk_def_line] = lines[atk_def_line] + ";"                
+            lines[atk_freekick_def_line] = lines[atk_freekick_def_line] + ";"
             return lines
 
 def modify_atkMid(num_level, curr_team, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsAway, df_ratings, midfielderNamesAway, prob_to_lose_home_midfielders, aggression_home_midfielders, freekick_mid_away):
@@ -116,11 +118,13 @@ def modify_atkMid(num_level, curr_team, lines, atk_mid_line, atk_freekick_mid_li
                     sys.exit(1)
                 #TODO modify defender ratings in pcsp file
                 if ind == 0:
-                    lines[atk_mid_line] = lines[atk_mid_line] + f"[pos[{pos}] == 1]Mid({sp, lp, ls,prob_to_lose_home_midfielders, aggression_home_midfielders, pos})"
-                    lines[atk_freekick_mid_line] = lines[atk_freekick_mid_line] + f"[pos[{pos}] == 1]FKMid({freekick_mid_away, pos})"
+                    lines[atk_mid_line] = lines[atk_mid_line] + f"[pos[{pos}] == 1]Mid{sp, lp, ls,prob_to_lose_home_midfielders, aggression_home_midfielders, pos}"
+                    lines[atk_freekick_mid_line] = lines[atk_freekick_mid_line] + f"[pos[{pos}] == 1]FKMid{freekick_mid_away, pos}"
                 else:
-                    lines[atk_mid_line] = lines[atk_mid_line] + f"[] [pos[{pos}] == 1]Mid({sp, lp,ls, prob_to_lose_home_midfielders, aggression_home_midfielders, pos})"
-                    lines[atk_freekick_mid_line] = lines[atk_freekick_mid_line] + f"[] [pos[{pos}] == 1]FKMid({freekick_mid_away, pos})"
+                    lines[atk_mid_line] = lines[atk_mid_line] + f"[] [pos[{pos}] == 1]Mid{sp, lp,ls, prob_to_lose_home_midfielders, aggression_home_midfielders, pos}"
+                    lines[atk_freekick_mid_line] = lines[atk_freekick_mid_line] + f"[] [pos[{pos}] == 1]FKMid{freekick_mid_away, pos}"
+            lines[atk_mid_line] = lines[atk_mid_line] + ";"
+            lines[atk_freekick_mid_line] = lines[atk_freekick_mid_line] + ";"
             return lines
 
 
@@ -130,7 +134,7 @@ def modify_atkFor(num_level, curr_team, lines, atk_for_line, atk_freekick_for_li
                 num_line2 = 91
             else:
                 num_line1 = 42
-                num_line2 = 96
+                num_line2 = 97
 
             lines[atk_for_line] = "AtkFor = "
             lines[atk_freekick_for_line] = "AtkFreeKickFor = "
@@ -146,35 +150,37 @@ def modify_atkFor(num_level, curr_team, lines, atk_for_line, atk_freekick_for_li
                 he = for_ratings_row[0][df_ratings.columns.get_loc('attacking_heading_accuracy')]
                 if (pos == "L"):
                     lines[num_line1 - 1] = lines[num_line1 - 1][:24] + "1" + lines[num_line1 - 1][25:]
-                    lines[num_line2 - 1] = lines[num_line2  - 1][:27] + "4" + lines[num_line2  - 1][28:]
+                    lines[num_line2 - 1] = lines[num_line2  - 1][:24] + "4" + lines[num_line2  - 1][25:]
                 elif (pos == "LR"):
                     lines[num_line1 - 1] = lines[num_line1 - 1][:27] + "1" + lines[num_line1 - 1][28:]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][:30] + "4" + lines[num_line2  - 1][31:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:27] + "4" + lines[num_line2  - 1][28:]
                 elif (pos == "CL"):
                     lines[num_line1 - 1] = lines[num_line1 - 1][:30] + "1" + lines[num_line1 - 1][31:]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][:33] + "4" + lines[num_line2  - 1][34:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:30] + "4" + lines[num_line2  - 1][31:]
                 elif (pos == "C"):
                     lines[num_line1 - 1] = lines[num_line1 - 1][:33] + "1" + lines[num_line1 - 1][34:]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][:36] + "4" + lines[num_line2  - 1][37:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:33] + "4" + lines[num_line2  - 1][34:]
                 elif (pos == "CR"):
                     lines[num_line1 - 1] = lines[num_line1 - 1][:36] + "1" + lines[num_line1 - 1][37:]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][:39] + "4" + lines[num_line2  - 1][40:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:36] + "4" + lines[num_line2  - 1][37:]
                 elif (pos == "RL"):
                     lines[num_line1 - 1] = lines[num_line1 - 1][:39] + "1" + lines[num_line1 - 1][40:]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][:42] + "4" + lines[num_line2  - 1][43:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:39] + "4" + lines[num_line2  - 1][40:]
                 elif (pos == "R"):
                     lines[num_line1 - 1] = lines[num_line1 - 1][:42] + "1" + lines[num_line1 - 1][43:]
-                    lines[num_line2  - 1] = lines[num_line2  - 1][:45] + "1" + lines[num_line2  - 1][46:]
+                    lines[num_line2  - 1] = lines[num_line2  - 1][:42] + "4" + lines[num_line2  - 1][43:]
                 else:
                     print("wrong position")
                     sys.exit(1)
                 #TODO modify defender ratings in pcsp file
                 if ind == 0:
-                    lines[atk_for_line] = lines[atk_for_line] + f"[pos[{pos}] == 1]For({sp, lp,fi,ls,vo,he,dr,prob_to_lose_away_defenders, aggression_away_defenders, pos})"
-                    lines[atk_freekick_for_line] = lines[atk_freekick_for_line] + f"[pos[{pos}] == 1]FKFor({freekick_for_home, pos})"
+                    lines[atk_for_line] = lines[atk_for_line] + f"[pos[{pos}] == 1]For{sp, lp,fi,ls,vo,he,dr,prob_to_lose_away_defenders, aggression_away_defenders, pos}"
+                    lines[atk_freekick_for_line] = lines[atk_freekick_for_line] + f"[pos[{pos}] == 1]FKFor{freekick_for_home, pos}"
                 else:
-                    lines[atk_for_line] = lines[atk_for_line] + f"[] [pos[{pos}] == 1]For({sp, lp,fi,ls,vo,he,dr, prob_to_lose_away_defenders, aggression_away_defenders, pos})"
-                    lines[atk_freekick_for_line] = lines[atk_freekick_for_line] + f"[] [pos[{pos}] == 1]FKFor({freekick_for_home, pos})"
+                    lines[atk_for_line] = lines[atk_for_line] + f"[] [pos[{pos}] == 1]For{sp, lp,fi,ls,vo,he,dr, prob_to_lose_away_defenders, aggression_away_defenders, pos}"
+                    lines[atk_freekick_for_line] = lines[atk_freekick_for_line] + f"[] [pos[{pos}] == 1]FKFor{freekick_for_home, pos}"
+            lines[atk_for_line] = lines[atk_for_line] + ";"
+            lines[atk_freekick_for_line] = lines[atk_freekick_for_line] + ";"
             return lines
 
 def modify_atkMidDef(curr_team, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsHome, df_ratings, midDefNamesHome, prob_to_lose_away_middeffielders, aggression_away_middeffielders, freekick_middef_home):
@@ -204,11 +210,13 @@ def modify_atkMidDef(curr_team, lines, atk_middef_line, atk_freekick_middef_line
                     sys.exit(1)
                 #TODO modify defender ratings in pcsp file
                 if ind == 0:
-                    lines[atk_middef_line] = lines[atk_middef_line] + f"[pos[{pos}] == 1]MidDef({sp, lp, prob_to_lose_away_middeffielders, aggression_away_middeffielders, pos})"
-                    lines[atk_freekick_middef_line] = lines[atk_freekick_middef_line] + f"[pos[{pos}] == 1]FKMidDef({freekick_middef_home, pos})"
+                    lines[atk_middef_line] = lines[atk_middef_line] + f"[pos[{pos}] == 1]MidDef{sp, lp, prob_to_lose_away_middeffielders, aggression_away_middeffielders, pos}"
+                    lines[atk_freekick_middef_line] = lines[atk_freekick_middef_line] + f"[pos[{pos}] == 1]FKMidDef{freekick_middef_home, pos}"
                 else:
-                    lines[atk_middef_line] = lines[atk_middef_line] + f"[] [pos[{pos}] == 1]MidDef({sp, lp,prob_to_lose_away_middeffielders, aggression_away_middeffielders, pos})"
-                    lines[atk_freekick_middef_line] = lines[atk_freekick_middef_line] + f"[] [pos[{pos}] == 1]FKMidDef({freekick_middef_home, pos})"
+                    lines[atk_middef_line] = lines[atk_middef_line] + f"[] [pos[{pos}] == 1]MidDef{sp, lp,prob_to_lose_away_middeffielders, aggression_away_middeffielders, pos}"
+                    lines[atk_freekick_middef_line] = lines[atk_freekick_middef_line] + f"[] [pos[{pos}] == 1]FKMidDef{freekick_middef_home, pos}"
+            lines[atk_middef_line] = lines[atk_middef_line] + ";"
+            lines[atk_freekick_middef_line] = lines[atk_freekick_middef_line] + ";"
             return lines
 #Create probability for every season
 def readfile(season):
@@ -432,13 +440,13 @@ def readfile(season):
             atk_mid_line = 72 - 1
             atk_freekick_mid_line = 74 - 1
             atk_for_line = 77 - 1
-            atk_freekick_for_line = 78 - 1
-            def_kep_line = 82 - 1
-            distToKep_line = 96 - 1
+            atk_freekick_for_line = 79 - 1
+            def_kep_line = 83 - 1
+            distToKep_line = 97 - 1
 
             # Update the rating of the AtkKep row
             lines[atk_kep_line] = f"AtkKep = [pos[C] == 1]Kep_1({short_pass_rating}, {long_pass_rating}, C);\n"
-            lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({gk_handling_rating}, C);\n"
+            lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({int(gk_handling_rating)}, C);\n"
             # Calculate probability to lose posession to away team forwards
             # Calculate also the aggression rating
 
@@ -519,7 +527,8 @@ def readfile(season):
             ##generate home pcsp file using 3 levels template
             
             
-            out_file, lines = create_template_files(home, away, season, template_file_3f)
+            out_file, lines = create_template_files(home, away, season, template_file_4f)
+            # out_file, lines = create_template_files(home, away, season, template_file_3f)
             # Modify the desired row and column
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
@@ -532,18 +541,30 @@ def readfile(season):
             gk_away_ratings_row = df_ratings.loc[(lambda df: df['club_name'] == away) and (lambda df: df['sofifa_id'] == int(float(goalkeeperNameAway)))].values
             gk_handling_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
             # Define the line number of AtkKep and DefKep in the file
-            atk_kep_line = 49 - 1
+            # atk_kep_line = 49 - 1
+            # atk_def_line = 56 - 1
+            # atk_freekick_def_line = 58 - 1
+            # atk_mid_line = 66 - 1
+            # atk_freekick_mid_line = 68 - 1
+            # atk_for_line = 71 - 1
+            # atk_freekick_for_line = 73 - 1
+            # def_kep_line = 78 - 1
+            # distToKep_line = 91 - 1
+            atk_kep_line = 50 - 1
             atk_def_line = 56 - 1
             atk_freekick_def_line = 58 - 1
-            atk_mid_line = 66 - 1
-            atk_freekick_mid_line = 68 - 1
-            atk_for_line = 71 - 1
-            atk_freekick_for_line = 73 - 1
-            def_kep_line = 78 - 1
-            distToKep_line = 91 - 1
+            atk_middef_line = 67 - 1
+            atk_freekick_middef_line = 69 - 1
+            atk_mid_line = 72 - 1
+            atk_freekick_mid_line = 74 - 1
+            atk_for_line = 77 - 1
+            atk_freekick_for_line = 79 - 1
+            def_kep_line = 83 - 1
+            distToKep_line = 97 - 1
+
             # Update the rating of the AtkKep row
             lines[atk_kep_line] = f"AtkKep = [pos[C] == 1]Kep_1({short_pass_rating}, {long_pass_rating}, C);\n"
-            lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({gk_handling_rating}, C);\n"
+            lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({int(gk_handling_rating)}, C);\n"
             # Calculate probability to lose posession to away team forwards
             # Calculate also the aggression rating
 
@@ -560,12 +581,19 @@ def readfile(season):
             freekick_def_home = create_free_kick_rating(defenderNamesHome, df_ratings, home, rely_skills='skill_long_passing')
             freekick_mid_home = create_free_kick_rating(midfielderNamesHome, df_ratings, home, rely_skills='skill_fk_accuracy')
             freekick_for_home = create_free_kick_rating(forwardNamesHome, df_ratings, home, rely_skills='skill_fk_accuracy')
+            freekick_middef_home = create_free_kick_rating(midfielderNamesHome, df_ratings, away, 'skill_long_passing')
 
-
+            prob_to_lose_home_forwards, aggression_home_forwards = create_prob_to_lose(forwardNamesHome, df_ratings, home)
+            prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderNamesHome, df_ratings, home)
+            prob_to_lose_home_defenders, aggression_home_defenders = create_prob_to_lose(defenderNamesHome, df_ratings, home)
+            prob_to_lose_away_middeffielders,  aggression_away_middeffielders = create_prob_to_lose(midfielderNamesHome, df_ratings, home)
 
             lines = modify_atkDef(home, lines, atk_def_line, atk_freekick_def_line, defenderPositionsHome, df_ratings, defenderNamesHome, prob_to_lose_away_forwards, aggression_away_forwards, freekick_def_home)
-            lines = modify_atkMid(3, home, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsHome, df_ratings, midfielderNamesHome, prob_to_lose_away_midfielders, aggression_away_midfielders, freekick_mid_home)
-            lines = modify_atkFor(3, home, lines, atk_for_line, atk_freekick_for_line, forwardPositionsHome, df_ratings, forwardNamesHome, prob_to_lose_away_defenders, aggression_away_defenders, freekick_for_home)
+            lines = modify_atkMid(4, home, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsHome, df_ratings, midfielderNamesHome, prob_to_lose_away_midfielders, aggression_away_midfielders, freekick_mid_home)
+            lines = modify_atkFor(4, home, lines, atk_for_line, atk_freekick_for_line, forwardPositionsHome, df_ratings, forwardNamesHome, prob_to_lose_away_defenders, aggression_away_defenders, freekick_for_home)
+            lines = modify_atkMidDef(home, lines, atk_middef_line, atk_freekick_middef_line, midfielderPositionsHome, df_ratings, midfielderNamesHome, prob_to_lose_away_middeffielders, aggression_away_middeffielders, freekick_middef_home)
+            # lines = modify_atkMidDef(home, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsHome, df_ratings, midDefNamesHome, prob_to_lose_away_middeffielders, aggression_away_middeffielders, freekick_middef_home)
+
             # Open the file in write mode and write the modified content
             with open(out_file, 'w') as file:
                 file.writelines(lines)
@@ -576,10 +604,10 @@ def readfile(season):
             # Calculate also the aggression rating
 
             # mid, middef calculated based on opponent team's mid fielder only
-            prob_to_lose_home_forwards, aggression_home_forwards = create_prob_to_lose(forwardNamesHome, df_ratings, home)
-            prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderNamesHome, df_ratings, home)
-            prob_to_lose_home_defenders, aggression_home_defenders = create_prob_to_lose(defenderNamesHome, df_ratings, home)
-            prob_to_lose_away_middeffielders,  aggression_away_middeffielders = create_prob_to_lose(midfielderNamesHome, df_ratings, home)
+            # prob_to_lose_home_forwards, aggression_home_forwards = create_prob_to_lose(forwardNamesHome, df_ratings, home)
+            # prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderNamesHome, df_ratings, home)
+            # prob_to_lose_home_defenders, aggression_home_defenders = create_prob_to_lose(defenderNamesHome, df_ratings, home)
+            # prob_to_lose_away_middeffielders,  aggression_away_middeffielders = create_prob_to_lose(midfielderNamesHome, df_ratings, home)
             
 
             freekick_def_away = create_free_kick_rating(defenderNamesAway, df_ratings, away, 'skill_long_passing')
@@ -591,7 +619,8 @@ def readfile(season):
             lines = modify_atkDef(away, lines, atk_def_line, atk_freekick_def_line, defenderPositionsAway, df_ratings, defenderNamesAway, prob_to_lose_home_forwards, aggression_home_forwards, freekick_def_away)
             lines = modify_atkMid(4, away, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsAway, df_ratings, midfielderNamesAway, prob_to_lose_home_midfielders, aggression_home_midfielders, freekick_mid_away)
             lines = modify_atkFor(4, away, lines, atk_for_line, atk_freekick_for_line, forwardPositionsAway, df_ratings, forwardNamesHome, prob_to_lose_home_defenders, aggression_home_defenders, freekick_for_away)
-            # lines = modify_atkMidDef(away, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsAway, df_ratings, midDefNamesAway, prob_to_lose_home_middeffielders, aggression_home_middeffielders, freekick_middef_away) Dont need because it is 4 vs 3?
+            lines = modify_atkMidDef(away, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsAway, df_ratings, midDefNamesAway, prob_to_lose_home_midfielders, aggression_home_midfielders, freekick_middef_away)
+            # lines = modify_atkMidDef(away, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsAway, df_ratings, midDefNamesAway, prob_to_lose_home_middeffielders, aggression_home_middeffielders, freekick_middef_away)
 
             # Open the file in write mode and write the modified content
             with open(out_file, 'w') as file:
@@ -645,14 +674,14 @@ def readfile(season):
             atk_mid_line = 72 - 1
             atk_freekick_mid_line = 74 - 1
             atk_for_line = 77 - 1
-            atk_freekick_for_line = 78 - 1
-            def_kep_line = 82 - 1
-            distToKep_line = 96 - 1
+            atk_freekick_for_line = 79 - 1
+            def_kep_line = 83 - 1
+            distToKep_line = 97 - 1
 
 
             # Update the rating of the AtkKep row
             lines[atk_kep_line] = f"AtkKep = [pos[C] == 1]Kep_1({short_pass_rating}, {long_pass_rating}, C);\n"
-            lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({gk_handling_rating}, C);\n"
+            lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({int(gk_handling_rating)}, C);\n"
             # Calculate probability to lose posession to away team forwards
             # Calculate also the aggression rating
 
@@ -673,7 +702,7 @@ def readfile(season):
             lines = modify_atkDef(home, lines, atk_def_line, atk_freekick_def_line, defenderPositionsHome, df_ratings, defenderNamesHome, prob_to_lose_away_forwards, aggression_away_forwards, freekick_def_home)
             lines = modify_atkMid(4, home, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsHome, df_ratings, midfielderNamesHome, prob_to_lose_away_midfielders, aggression_away_midfielders, freekick_mid_home)
             lines = modify_atkFor(4, home, lines, atk_for_line, atk_freekick_for_line, forwardPositionsHome, df_ratings, forwardNamesHome, prob_to_lose_away_defenders, aggression_away_defenders, freekick_for_home)
-            # lines = modify_atkMidDef(home, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsHome, df_ratings, midDefNamesHome, prob_to_lose_away_middeffielders, aggression_away_middeffielders, freekick_middef_home) no need since it is 4 rows vs 3 rows?
+            lines = modify_atkMidDef(home, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsHome, df_ratings, midDefNamesHome, prob_to_lose_away_middeffielders, aggression_away_middeffielders, freekick_middef_home)
             
             
             # Open the file in write mode and write the modified content
@@ -697,12 +726,13 @@ def readfile(season):
             freekick_def_away = create_free_kick_rating(defenderNamesAway, df_ratings, away, 'skill_long_passing')
             freekick_mid_away = create_free_kick_rating(midfielderNamesAway, df_ratings, away, 'skill_fk_accuracy')  
             freekick_for_away = create_free_kick_rating(forwardNamesAway, df_ratings, away, 'skill_fk_accuracy')
-
+            freekick_middef_away = create_free_kick_rating(midDefNamesAway, df_ratings, away, rely_skills='skill_long_passing')
 
             lines = modify_atkDef(away, lines, atk_def_line, atk_freekick_def_line, defenderPositionsAway, df_ratings, defenderNamesAway, prob_to_lose_home_forwards, aggression_home_forwards, freekick_def_away)
-            lines = modify_atkMid(3, away, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsAway, df_ratings, midfielderNamesAway, prob_to_lose_home_midfielders, aggression_home_midfielders, freekick_mid_away) 
-            lines = modify_atkFor(3, away, lines, atk_for_line, atk_freekick_for_line, forwardPositionsAway, df_ratings, forwardNamesAway, prob_to_lose_home_defenders, aggression_home_defenders, freekick_for_away)
-    
+            lines = modify_atkMid(4, away, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsAway, df_ratings, midfielderNamesAway, prob_to_lose_home_midfielders, aggression_home_midfielders, freekick_mid_away) 
+            lines = modify_atkFor(4, away, lines, atk_for_line, atk_freekick_for_line, forwardPositionsAway, df_ratings, forwardNamesAway, prob_to_lose_home_defenders, aggression_home_defenders, freekick_for_away)
+            lines = modify_atkMidDef(away, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsAway, df_ratings, midDefNamesAway, prob_to_lose_home_middeffielders, aggression_home_middeffielders, freekick_middef_away)
+
             # Open the file in write mode and write the modified content
             with open(out_file, 'w') as file:
                 file.writelines(lines)
@@ -720,8 +750,6 @@ def readfile(season):
     out_path = 'C:\\Users\\Lenovo\\Documents\\cs4211_project\\output' # Change your directory
     # Get a list of all files in the directory
     file_list = os.listdir(dir_path)
-    print('length')
-    print(len(file_list))
 
     # Iterate over the list and read each file
     ind = 0
@@ -733,6 +761,7 @@ def readfile(season):
             open(file_out, 'w').close()
         command = [consolePath, '-pcsp',file_path, file_out]
         result = subprocess.check_output(command)
+        print(result)
         ind = ind + 1
     #create the new probabilities/season.csv
     workbook = Workbook()

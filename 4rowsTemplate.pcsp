@@ -35,12 +35,12 @@ enum {DEF, MIDDEF, MID, FOR}; //MIDDEF stand for Defensive Midfielder position
 // Soccer field grid
 // 1 means there is a player in that position
 // 0 means there is no player in that position
-var atkKepPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+var atkKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
 var atkDefPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
 var atkMidDefPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
 var atkMidPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
 var atkForPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
-var defKepPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+var defKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
 
 ///////////// AWAY TEAM PLAYERS (Attacking Team) /////////////
 // The parameters represent the probabilities specific to the player 
@@ -332,7 +332,7 @@ UpdatePos(p, e) = case {
 #define Goal4 danger <= 4;
 #assert AtkKep deadlockfree;
 #assert AtkKep |= F G Goal0 with prob;
-#assert AtkKep |= F G Goal1 with prob;
-#assert AtkKep |= F G Goal2 with prob;
-#assert AtkKep |= F G Goal3 with prob;
-#assert AtkKep |= F G Goal4 with prob;
+//#assert AtkKep |= F G Goal1 with prob;
+//#assert AtkKep |= F G Goal2 with prob;
+//#assert AtkKep |= F G Goal3 with prob;
+//#assert AtkKep |= F G Goal4 with prob;
