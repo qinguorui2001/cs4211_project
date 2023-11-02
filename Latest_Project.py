@@ -730,7 +730,7 @@ def readfile(season):
     # Define the directory path
     pcsp_dir_path = 'C:\\Users\\nicky\\Desktop\\a\\pcspDir' # Change your directory
     # dir_path = 'C:\\Users\\Lenovo\\Documents\\cs4211_project\\temp' # Temporary testing if needed, need to add your own temp folder
-    output_dir_path = 'C:\\Users\\nicky\\Desktop\\a\\output' # Change your directory
+    output_dir_path = 'C:\\Users\\nicky\\Desktop\\a\\output\\' # Change your directory
     # Get a list of all files in the directory
     file_list = os.listdir(pcsp_dir_path)
 
