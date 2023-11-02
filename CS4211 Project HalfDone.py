@@ -715,10 +715,13 @@ def readfile(season):
     #after adding all the pcsp for the matches, we can start to run the PAT3 Console on the files
     consolePath = 'C:\\Program Files\\Process Analysis Toolkit\\Process Analysis Toolkit 3.5.1\\PAT3.Console.exe'
     # Define the directory path
-    dir_path = 'C:\\Users\\nicky\\Desktop\\pcspDir'
-    out_path = 'C:\\Users\\nicky\\Desktop\\output'
+    dir_path = 'C:\\Users\\Lenovo\\Documents\\cs4211_project\\pcspDir' # Change your directory
+    # dir_path = 'C:\\Users\\Lenovo\\Documents\\cs4211_project\\temp' # Temporary testing if needed, need to add your own temp folder
+    out_path = 'C:\\Users\\Lenovo\\Documents\\cs4211_project\\output' # Change your directory
     # Get a list of all files in the directory
     file_list = os.listdir(dir_path)
+    print('length')
+    print(len(file_list))
 
     # Iterate over the list and read each file
     ind = 0
@@ -730,7 +733,6 @@ def readfile(season):
             open(file_out, 'w').close()
         command = [consolePath, '-pcsp',file_path, file_out]
         result = subprocess.check_output(command)
-        print(result)
         ind = ind + 1
     #create the new probabilities/season.csv
     workbook = Workbook()
@@ -739,25 +741,36 @@ def readfile(season):
     # then from all the outputs, extract out the probabilities from home team and away team, then softmax them to get the softmaxed home team victory probability
     home_prob = 0
     away_prob = 0
-    softmax = []
+    softmaxlist = []
     for ind,file_name in enumerate(os.listdir(out_path)):
         if ind % 2 == 0:
+            file_name = 'C:\\Users\\Lenovo\\Documents\\cs4211_project\\output\\' + file_name # Change your directory
             with open(file_name, 'r') as file:
                 # Read the contents of the file into a list of lines
                 lines = file.readlines()
-                get_prob = lines[21][75:91].split(',')
+                get_prob = lines[21][75:89].split(',')
                 home_prob = ceil((float(get_prob[0]) + float(get_prob[1]))/2)
         if ind % 2 == 1:
+            file_name = 'C:\\Users\\Lenovo\\Documents\\cs4211_project\\output\\' + file_name # Change your directory
+
             with open(file_name, 'r') as file:
                 # Read the contents of the file into a list of lines
                 lines = file.readlines()
-                get_prob = lines[21][75:91].split(',')
+                get_prob = lines[21][75:89].split(',')
                 away_prob = ceil((float(get_prob[0]) + float(get_prob[1]))/2)
-                softmax.append(str(softmax([home_prob,away_prob])[0]))
-            
+                l = [home_prob, away_prob]
+                def softmax(z):
+                    """Compute softmax values for each sets of scores in z."""
+                    exponents = [math.exp(value) for value in z]
+                    exp_sum = sum(exponents)
+                    return [exp_value / exp_sum for exp_value in exponents]
+                softmaxlist.append(str(softmax([home_prob,away_prob])[0]))
+    match_url_arr = ["randomUrl#"]   
     for ind,url in enumerate(match_url_arr):
-        workbook.append([url, softmax[ind]])
+        worksheet.append([url, softmaxlist[ind]])
+        # workbook.append([url, softmax[ind]])
     workbook.save(f"new_probabilities/{season}.csv")
+    # workbook.save(f"{season}.csv")
         
 if __name__ == "__main__":
     seasons = [20152016, 20162017, 20172018, 20182019, 20192020, 20202021]
