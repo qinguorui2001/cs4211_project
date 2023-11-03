@@ -795,8 +795,8 @@ def readfile(season):
     ind = 0
 
     try:
-        for file_name in file_list:
-            print(f"running {season} {file_name}.")
+        for (file_name, index) in file_list:
+            print(f"running index {index} {season} {file_name}.")
             file_path = os.path.join(dir_path, file_name)
             file_out = f"{out_path}\\output{ind}.txt" #Should not be in same directory as pcsp since it might interfere with the for loop
             if not os.path.isfile(file_out):
