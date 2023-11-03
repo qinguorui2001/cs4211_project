@@ -7,9 +7,9 @@ import subprocess
 from openpyxl import Workbook
 
 
-def create_template_files(home, away, season, template_file):
+def create_template_files(index, home, away, season, template_file):
     #first create the home pcsp file from the template file
-    out_file = f"pcspDir\\{season}\\{home}{away}{season}.pcsp"
+    out_file = f"pcspDir\\{season}\\{index}{home}{away}{season}.pcsp"
     open(out_file,'w').close() #creates the file
     with open(template_file, 'r') as fp_in, open(out_file, 'w') as fp_out: #copy template file to out file
         for line in fp_in:
@@ -310,7 +310,7 @@ def readfile(season):
             ##generate home pcsp file using 3 levels template
             
             
-            out_file, lines = create_template_files(home, away, season, template_file_3f)
+            out_file, lines = create_template_files(index, home, away, season, template_file_3f)
 
             # Modify the desired row and column
             #remember that we are reading from array and the numbers are the indexes of the array
@@ -359,7 +359,7 @@ def readfile(season):
                 file.writelines(lines)
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
 
-            out_file, lines = create_template_files(away, home, season, template_file_3f)
+            out_file, lines = create_template_files(index, away, home, season, template_file_3f)
             short_pass_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
             long_pass_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
             gk_handling_rating = gk_home_ratings_row[0][df_ratings.columns.get_loc('gk_handling')]
@@ -419,7 +419,7 @@ def readfile(season):
             forwardNamesAway = away_team[1 + def_4A +midDef_4A +mid_4A:]
             
             
-            out_file, lines = create_template_files(home, away, season, template_file_4f)
+            out_file, lines = create_template_files(index, home, away, season, template_file_4f)
             # Modify the desired row and column
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
@@ -482,7 +482,7 @@ def readfile(season):
 
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
             
-            out_file, lines = create_template_files(away, home, season, template_file_4f)
+            out_file, lines = create_template_files(index, away, home, season, template_file_4f)
 
             short_pass_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
             long_pass_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
@@ -516,7 +516,6 @@ def readfile(season):
 
 
 
-
         elif (is3levels_home and is4levels_away): #TODO
             homePositions = home_seq.split(',')
             home_team = home_team.split(',')
@@ -542,8 +541,8 @@ def readfile(season):
             ##generate home pcsp file using 3 levels template
             
             
-            out_file, lines = create_template_files(home, away, season, template_file_4f)
-            # out_file, lines = create_template_files(home, away, season, template_file_3f)
+            out_file, lines = create_template_files(index, home, away, season, template_file_4f)
+            # out_file, lines = create_template_files(index, home, away, season, template_file_3f)
             # Modify the desired row and column
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
@@ -619,7 +618,7 @@ def readfile(season):
                 file.writelines(lines)
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
 
-            out_file, lines = create_template_files(away, home, season, template_file_4f)
+            out_file, lines = create_template_files(index, away, home, season, template_file_4f)
 
             short_pass_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
             long_pass_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
@@ -680,7 +679,7 @@ def readfile(season):
             forwardIdsHome = home_team[1 + def_4H +midDef_4H + mid_4H:]
 
             
-            out_file, lines = create_template_files(home, away, season, template_file_4f)
+            out_file, lines = create_template_files(index, home, away, season, template_file_4f)
             # Modify the desired row and column
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
@@ -743,7 +742,7 @@ def readfile(season):
                 file.writelines(lines)
             
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
-            out_file, lines = create_template_files(away, home, season, template_file_4f)
+            out_file, lines = create_template_files(index, away, home, season, template_file_4f)
 
             short_pass_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
             long_pass_rating = gk_away_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
