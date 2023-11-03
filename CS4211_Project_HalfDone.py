@@ -9,7 +9,7 @@ from openpyxl import Workbook
 
 def create_template_files(index, home, away, season, template_file):
     #first create the home pcsp file from the template file
-    out_file = f"pcspDir\\{season}\\{index}{home}{away}{season}.pcsp"
+    out_file = f"pcspDir\\{season}\\{'0' if index < 100 else ''}{'0' if index < 10 else ''}{index} {home}{away}{season}.pcsp"
     open(out_file,'w').close() #creates the file
     with open(template_file, 'r') as fp_in, open(out_file, 'w') as fp_out: #copy template file to out file
         for line in fp_in:
@@ -793,12 +793,11 @@ def readfile(season):
 
     # Iterate over the list and read each file
     ind = 0
-
     try:
         for (file_name) in file_list:
             print(f"running index {season} {file_name}.")
             file_path = os.path.join(dir_path, file_name)
-            file_out = f"{out_path}\\output{ind}.txt" #Should not be in same directory as pcsp since it might interfere with the for loop
+            file_out = f"{out_path}\\output {file_name}.txt" #Should not be in same directory as pcsp since it might interfere with the for loop
             if not os.path.isfile(file_out):
                 # Create destination file if it does not exist
                 open(file_out, 'w').close()
