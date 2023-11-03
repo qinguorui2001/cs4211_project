@@ -339,7 +339,7 @@ def readfile(season):
 
             # Update the rating of the AtkKep row
             lines[atk_kep_line] = f"AtkKep = [pos[C] == 1]Kep_1({short_pass_rating}, {long_pass_rating}, C);\n"
-            lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({gk_handling_rating}, C);\n"
+            lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({int(gk_handling_rating)}, C);\n"
 
             prob_to_lose_away_forwards, aggression_away_forwards = create_prob_to_lose(forwardNamesAway, df_ratings, away)
             prob_to_lose_away_midfielders, aggression_away_midfielders = create_prob_to_lose(midfielderIdsAway, df_ratings, away)
