@@ -54,7 +54,7 @@ AtkKep = [pos[C] == 1]Kep_1( 64, 64, C);
 // The prob. to lose the ball for the attacking team's defenders was calculated based on the defending team forward's player ratings 
 // In particular, the probability to lose the ball(k here, 3rd parameter here) was a weighted combination of the standing tackle, sliding tackle, and interception FIFA player ratings of the forwards
 // The prob. of a foul on the attacking team's defenders was calculated based on the defending team forward's player mentality_aggression ratings. A Higher mentality_aggression rating increases the chances of a foul. 
-AtkDef = [pos[R] == 1]Def(73, 71, 38, 15, R) [] [pos[CR] == 1]Def(68, 63, 38, 15, CR) [] [pos[CL] == 1]Def(68, 63, 38, 15, CL) [] [pos[L] == 1]Def(72, 59, 38, 15, L)
+AtkDef = [pos[R] == 1]Def(73, 71, 38, 15, R) [] [pos[CR] == 1]Def(68, 63, 38, 15, CR) [] [pos[CL] == 1]Def(68, 63, 38, 15, CL) [] [pos[L] == 1]Def(72, 59, 38, 15, L);
 // parameter is determined by the highest long_pass amongst the attacking team's defenders
 AtkFreeKickDef = [pos[R] == 1]FKDef(80, R) [] [pos[CR] == 1]FKDef(80, CR) [] [pos[CL] == 1]FKDef(80, CL) [] [pos[L] == 1]FKDef(80, L);
 
@@ -80,7 +80,7 @@ AtkMidFor = [pos[C] == 1]MidFor(83, 80, 57, 59, 10, C);
 AtkFreeKickMidFor = [pos[C] == 1]FKMidFor(80, C);
 
 //parameters are Shortpass, longpass, finishing, longshot, volley, header, dribbling, prob. to lose posession, prob. to be fouled,position
-AtkFor = pos[C] == 1]For(70,54,75, 73, 66, 76,78, 75, 10, C);
+AtkFor = [pos[C] == 1]For(70,54,75, 73, 66, 76,78, 75, 10, C);
 // parameter is determined by the highest skill_fk_accuracy amongst the attacking team's forwards
 AtkFreeKickFor = [pos[C] == 1]FKFor(80, C);
 
