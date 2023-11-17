@@ -9,7 +9,7 @@ import multiprocessing
 from MainFunctionsN import create_template_files, softmax
 
 def operation(file_name, season, dir_path, out_path, consolePath):
-    print(f"running index {season} {file_name}.")
+    print(f"running {season} {file_name}.")
     file_path = os.path.join(dir_path, file_name)
     file_out = f"{out_path}\\output {file_name}.txt" #Should not be in same directory as pcsp since it might interfere with the for loop
     if not os.path.isfile(file_out):
