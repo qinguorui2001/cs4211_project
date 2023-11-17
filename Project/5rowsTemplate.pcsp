@@ -1,0 +1,387 @@
+#import "PAT.Math";
+
+// Position of players in grid
+// Left, LeftRight, and CenterLeft etc.
+#define L 6;
+#define LR 7;
+#define CL 8;
+#define C 9;
+#define CR 10;
+#define RL 11;
+#define R 12;
+
+// Grid of eligible positions that can receive the ball
+// This will change based on the previous position and the action taken
+// 1 means the position is eligible to receive the ball
+// 0 means the position is not eligible to receive the ball
+// See Individual Positions section for more info
+
+// initial pos here assume we start from goal keeper, we can change it to test if we start from defenders
+var pos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
+
+// If the ball is in the air
+var inAir = false;
+
+// Danger level for the attacking team
+// The lower the value, the lesser the danger
+var danger = 0;
+
+// Actions based on FIFA player ratings
+// ShortPass, LongPass, LongShot, Finishing, Volley, Header, Dribbling
+enum {SP, LP, LS, FI, VO, HD, DR};
+enum {DEF, MIDDEF, MID, MIDFOR, FOR}; //MIDDEF stand for Defensive Midfielder position
+// Match URL: https://www.premierleague.com/match/12115
+
+// Soccer field grid
+// 1 means there is a player in that position
+// 0 means there is no player in that position
+var atkKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
+var atkDefPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+var atkMidDefPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+var atkMidPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+var atkMidForPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+var atkForPos = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+var defKepPos = [-1(6), 0, 0, 0, 1, 0, 0, 0, -1(6)];
+
+///////////// AWAY TEAM PLAYERS (Attacking Team) /////////////
+// The parameters represent the probabilities specific to the player 
+// The guard only allows eligible players to get the ball, see Individual Positions section for more info
+
+// Parameters are ShortPass ,LongPass
+AtkKep = [pos[C] == 1]Kep_1( 0, 0, C);
+
+// parameters are ShortPass, LongPass, prob. to lose possession, prob. to be fouled,position
+// The prob. to lose the ball for the attacking team's defenders was calculated based on the defending team forward's player ratings 
+// In particular, the probability to lose the ball(k here, 3rd parameter here) was a weighted combination of the standing tackle, sliding tackle, and interception FIFA player ratings of the forwards
+// The prob. of a foul on the attacking team's defenders was calculated based on the defending team forward's player mentality_aggression ratings. A Higher mentality_aggression rating increases the chances of a foul. 
+AtkDef = 
+// parameter is determined by the highest long_pass amongst the attacking team's defenders
+AtkFreeKickDef = 
+
+// Similar to defenders, midfielders and forwards have their own specific parameters
+// See their processes below for more information on what those parameters are
+// The prob. to lose for the attacking team's midfielders is based on the defending team's defendsive midfielders
+// The prob. to lose for the attacking team's defensive midfielders is based on the defending team's midfielders
+// The prob. to lose for the attacking team's forwards is based on the defending team's defenders
+
+//parameters are ShortPass,LongPass, prob. to lose posession, prob. to be fouled, position
+AtkMidDef =
+// parameter is determined by the highest long pass amongst the attacking team's defensive midfielders
+AtkFreeKickMidDef = 
+
+//parameters are ShortPass, LongPass,LongShot, prob. to lose posession,prob. to be fouled,position
+AtkMid =
+// parameter is determined by the highest skill_fk_accuracy amongst the attacking team's attacking midfielders
+AtkFreeKickMid = 
+
+//parameters are ShortPass, LongPass,LongShot, prob. to lose posession,prob. to be fouled,position
+AtkMidFor =
+// parameter is determined by the highest skill_fk_accuracy amongst the attacking team's attacking midfielders
+AtkFreeKickMidFor = 
+
+//parameters are Shortpass, longpass, finishing, longshot, volley, header, dribbling, prob. to lose posession, prob. to be fouled,position
+AtkFor = 
+// parameter is determined by the highest skill_fk_accuracy amongst the attacking team's attacking forwards
+AtkFreeKickFor =
+
+///////////// HOME TEAM PLAYERS (Defending Team) /////////////
+// Home team defenders, midfielders and forwards are already implicitly "defending" via the prob. to lose the ball parameter
+//parameters are gk_handling
+DefKep = [pos[C] == 1]Kep_2( 0, C);
+
+///////////// Individual Positions /////////////
+// There is a guard to every action (e.g., shortPass) a player can take
+// The guard makes sure that there are players eligible to receive the ball should that action happen
+// Furthermore, based on the type of action taken, only some players will be eligible to receive the ball
+// E.g., If a defender at L does a shortPass, the midfielder at R should not be able to receive it
+// The eligible players are updated with UpdatePos
+
+//define each player can receive only one backward or side pass
+var memDef = [-1(6), 0(7), -1(6)];
+var memMidDef = [-1(6), 0(7), -1(6)];
+var memMid = [-1(6), 0(7), -1(6)];
+var memMidFor = [-1(6), 0(7), -1(6)];
+var memFor = [-1(6), 0(7), -1(6)];
+var distToKep = [-1(6), 0, 0, 0, 0, 0, 0, 0, -1(6)];
+
+// call this just means starting from kep-1
+Kep_1(sp, lp, p) = [atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1]shortPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); AtkDef
+	100-sp: intercepted{danger = 5;} -> Skip
+} [] [atkDefPos[p-6] == 1 || atkDefPos[p-5] == 1 || atkDefPos[p-4] == 1 || atkDefPos[p-3] == 1 || atkDefPos[p+3] == 1 || atkDefPos[p+4] == 1 || atkDefPos[p+5] == 1 || atkDefPos[p+6] == 1]longPass -> pcase {
+	lp: pass -> UpdatePos(p, LP); AtkDef
+	100-lp: intercepted{danger = 5;} -> Skip
+};
+
+// call this just means starting from def
+Def(sp, lp, lose,fouled, p) = [atkMidDefPos[p-2] == 1 || atkMidDefPos[p-1] == 1 || atkMidDefPos[p] == 1 || atkMidDefPos[p+1] == 1 || atkMidDefPos[p+2] == 1]shortPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); AtkMidDef
+	lose-fouled: tackled{danger = 4;} -> Skip
+	fouled: foul -> AtkFreeKickDef
+} [] [atkMidDefPos[p-6] == 1 || atkMidDefPos[p-5] == 1 || atkMidDefPos[p-4] == 1 || atkMidDefPos[p-3] == 1 || atkMidDefPos[p+3] == 1 || atkMidDefPos[p+4] == 1 || atkMidDefPos[p+5] == 1 || atkMidDefPos[p+6] == 1]longPass -> pcase {
+	lp: pass -> UpdatePos(p, LP); AtkMidDef
+	lose: tackled{danger = 4;} -> Skip
+	fouled: foul -> AtkFreeKickDef
+	// implement side pass for def
+} [] [(atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1) && memDef[p]==0]shortSidePass -> pcase {
+	sp: pass -> UpdatePos(p, SP); UpdateMem(DEF, p);AtkDef
+	lose: tackled{danger = 4;} -> Skip
+	fouled: foul -> AtkFreeKickDef
+} [] [(atkDefPos[p-6] == 1 || atkDefPos[p-5] == 1 || atkDefPos[p-4] == 1 || atkDefPos[p-3] == 1 || atkDefPos[p+3] == 1 || atkDefPos[p+4] == 1 || atkDefPos[p+5] == 1 || atkDefPos[p+6] == 1) && memDef[p]==0]longSidePass -> pcase {
+	lp: pass -> UpdatePos(p, LP); UpdateMem(DEF, p);AtkDef
+	lose: tackled{danger = 4;} -> Skip
+	fouled: foul -> AtkFreeKickDef
+};
+
+FKDef(successful, p) = [atkMidDefPos[p-2] == 1 || atkMidDefPos[p-1] == 1 || atkMidDefPos[p] == 1 || atkMidDefPos[p+1] == 1 || atkMidDefPos[p+2] == 1]shortPass -> pcase {
+	successful: pass -> UpdatePos(p, SP); AtkMidDef
+	100-successful: tackled{danger = 4;} -> Skip
+} [] [atkMidDefPos[p-6] == 1 || atkMidDefPos[p-5] == 1 || atkMidDefPos[p-4] == 1 || atkMidDefPos[p-3] == 1 || atkMidDefPos[p+3] == 1 || atkMidDefPos[p+4] == 1 || atkMidDefPos[p+5] == 1 || atkMidDefPos[p+6] == 1]longPass -> pcase {
+	successful: pass -> UpdatePos(p, LP); AtkMidDef
+	100-successful: tackled{danger = 4;} -> Skip
+};
+
+MidDef(sp, lp, lose,fouled, p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); AtkMid
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidDef
+} [] [atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longPass -> pcase {
+	lp: pass{inAir = true;} -> UpdatePos(p, LP); AtkMid
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidDef
+	// implement back pass 
+} [] [(atkDefPos[p-2] == 1 || atkDefPos[p-1] == 1 || atkDefPos[p] == 1 || atkDefPos[p+1] == 1 || atkDefPos[p+2] == 1) && memMidDef[p]==0]shortBackPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); UpdateMem(MIDDEF, p); AtkDef
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidDef
+} [] [(atkDefPos[p-6] == 1 || atkDefPos[p-5] == 1 || atkDefPos[p-4] == 1 ||atkDefPos[p-3] == 1 || atkDefPos[p+3] == 1 || atkDefPos[p+4] == 1 || atkDefPos[p+5] == 1 || atkDefPos[p+6] == 1)  && memMidDef[p]==0]longBackPass -> pcase {
+	lp: pass -> UpdatePos(p, LP); UpdateMem(MIDDEF, p);AtkDef
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidDef
+	// implement side pass
+} [] [(atkMidDefPos[p-2] == 1 || atkMidDefPos[p-1] == 1 || atkMidDefPos[p] == 1 || atkMidDefPos[p+1] == 1 || atkMidDefPos[p+2] == 1)  && memMidDef[p]==0]shortSidePass -> pcase {
+	sp: pass -> UpdatePos(p, SP); UpdateMem(MIDDEF, p);AtkMidDef
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidDef
+} [] [(atkMidDefPos[p-6] == 1 || atkMidDefPos[p-5] == 1 || atkMidDefPos[p-4] == 1 || atkMidDefPos[p-3] == 1 || atkMidDefPos[p+3] == 1 || atkMidDefPos[p+4] == 1 || atkMidDefPos[p+5] == 1 || atkMidDefPos[p+6] == 1)  && memMidDef[p]==0]longSidePass -> pcase {
+	lp: pass -> UpdatePos(p, LP); UpdateMem(MIDDEF, p); AtkMidDef
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidDef
+};
+
+FKMidDef(successful,p) = [atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1]shortPass -> pcase {
+	successful: pass -> UpdatePos(p, SP); AtkMid
+	100-successful: tackled{danger = 3;} -> Skip
+} [] [atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1]longPass -> pcase {
+	successful: pass -> UpdatePos(p, LP); AtkMid
+	100-successful: tackled{danger = 3;} -> Skip
+};
+
+Mid(sp, lp, ls, lose, fouled, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); AtkFor
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMid
+} [] [atkForPos[p-6] == 1 || atkForPos[p-5] == 1 || atkForPos[p-4] == 1 || atkForPos[p-3] == 1 || atkForPos[p+3] == 1 || atkForPos[p+4] == 1 || atkForPos[p+5] == 1 || atkForPos[p+6] == 1]longPass -> pcase {
+	lp: pass{inAir = true;} -> UpdatePos(p, LP); AtkFor
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMid
+} [] [defKepPos[C] == 1]longShot -> pcase {
+	ls: shoot -> UpdatePos(p, LS); DefKep
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMid
+	// implement back pass 
+} [] [(atkMidDefPos[p-2] == 1 || atkMidDefPos[p-1] == 1 || atkMidDefPos[p] == 1 || atkMidDefPos[p+1] == 1 || atkMidDefPos[p+2] == 1) && memMid[p]==0]shortBackPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); UpdateMem(MID, p); AtkMidDef
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMid
+} [] [(atkMidDefPos[p-6] == 1 || atkMidDefPos[p-5] == 1 || atkMidDefPos[p-4] == 1 ||atkMidDefPos[p-3] == 1 || atkMidDefPos[p+3] == 1 || atkMidDefPos[p+4] == 1 || atkMidDefPos[p+5] == 1 || atkMidDefPos[p+6] == 1)  && memMid[p]==0]longBackPass -> pcase {
+	lp: pass -> UpdatePos(p, LP); UpdateMem(MID, p);AtkMidDef
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMid
+	// implement side pass
+} [] [(atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1)  && memMid[p]==0]shortSidePass -> pcase {
+	sp: pass -> UpdatePos(p, SP); UpdateMem(MID, p);AtkMid
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMid
+} [] [(atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 || atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1)  && memMid[p]==0]longSidePass -> pcase {
+	lp: pass -> UpdatePos(p, LP); UpdateMem(MID, p); AtkMid
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMid
+};
+
+FKMid(successful, p) = [atkMidForPos[p-2] == 1 || atkMidForPos[p-1] == 1 || atkMidForPos[p] == 1 || atkMidForPos[p+1] == 1 || atkMidForPos[p+2] == 1]shortPass -> pcase {
+	successful: pass -> UpdatePos(p, SP); AtkMidFor
+	100-successful: tackled{danger = 3;} -> Skip
+} [] [atkMidForPos[p-6] == 1 || atkMidForPos[p-5] == 1 || atkMidForPos[p-4] == 1 || atkMidForPos[p-3] == 1 || atkMidForPos[p+3] == 1 || atkMidForPos[p+4] == 1 || atkMidForPos[p+5] == 1 || atkMidForPos[p+6] == 1]longPass -> pcase {
+	successful: pass{inAir = true;} -> UpdatePos(p, LP); AtkMidFor
+	100-successful: tackled{danger = 3;} -> Skip
+} [] [defKepPos[C] == 1]longShot -> pcase {
+	successful: shoot -> UpdatePos(p, LS); DefKep
+	100-successful: tackled{danger = 3;} -> Skip
+};
+
+MidFor(sp, lp, ls, lose, fouled, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); AtkFor
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidFor
+} [] [atkForPos[p-6] == 1 || atkForPos[p-5] == 1 || atkForPos[p-4] == 1 || atkForPos[p-3] == 1 || atkForPos[p+3] == 1 || atkForPos[p+4] == 1 || atkForPos[p+5] == 1 || atkForPos[p+6] == 1]longPass -> pcase {
+	lp: pass{inAir = true;} -> UpdatePos(p, LP); AtkFor
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidFor
+} [] [defKepPos[C] == 1]longShot -> pcase {
+	ls: shoot -> UpdatePos(p, LS); DefKep
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidFor
+	// implement back pass 
+} [] [(atkMidPos[p-2] == 1 || atkMidPos[p-1] == 1 || atkMidPos[p] == 1 || atkMidPos[p+1] == 1 || atkMidPos[p+2] == 1) && memMidFor[p]==0]shortBackPass -> pcase {
+	sp: pass -> UpdatePos(p, SP); UpdateMem(MIDFOR, p); AtkMid
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidFor
+} [] [(atkMidPos[p-6] == 1 || atkMidPos[p-5] == 1 || atkMidPos[p-4] == 1 ||atkMidPos[p-3] == 1 || atkMidPos[p+3] == 1 || atkMidPos[p+4] == 1 || atkMidPos[p+5] == 1 || atkMidPos[p+6] == 1)  && memMidFor[p]==0]longBackPass -> pcase {
+	lp: pass -> UpdatePos(p, LP); UpdateMem(MIDFOR, p);AtkMid
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidFor
+	// implement side pass
+} [] [(atkMidPos[p-2] == 1 || atkMidForPos[p-1] == 1 || atkMidForPos[p] == 1 || atkMidForPos[p+1] == 1 || atkMidForPos[p+2] == 1)  && memMidFor[p]==0]shortSidePass -> pcase {
+	sp: pass -> UpdatePos(p, SP); UpdateMem(MIDFOR, p);AtkMidFor
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidFor
+} [] [(atkMidForPos[p-6] == 1 || atkMidForPos[p-5] == 1 || atkMidForPos[p-4] == 1 || atkMidForPos[p-3] == 1 || atkMidForPos[p+3] == 1 || atkMidForPos[p+4] == 1 || atkMidForPos[p+5] == 1 || atkMidForPos[p+6] == 1)  && memMidFor[p]==0]longSidePass -> pcase {
+	lp: pass -> UpdatePos(p, LP); UpdateMem(MIDFOR, p); AtkMidFor
+	lose: tackled{danger = 3;} -> Skip
+	fouled: foul -> AtkFreeKickMidFor
+};
+
+FKMidFor(successful, p) = [atkForPos[p-2] == 1 || atkForPos[p-1] == 1 || atkForPos[p] == 1 || atkForPos[p+1] == 1 || atkForPos[p+2] == 1]shortPass -> pcase {
+	successful: pass -> UpdatePos(p, SP); AtkFor
+	100-successful: tackled{danger = 3;} -> Skip
+} [] [atkForPos[p-6] == 1 || atkForPos[p-5] == 1 || atkForPos[p-4] == 1 || atkForPos[p-3] == 1 || atkForPos[p+3] == 1 || atkForPos[p+4] == 1 || atkForPos[p+5] == 1 || atkForPos[p+6] == 1]longPass -> pcase {
+	successful: pass{inAir = true;} -> UpdatePos(p, LP); AtkFor
+	100-successful: tackled{danger = 3;} -> Skip
+} [] [defKepPos[C] == 1]longShot -> pcase {
+	successful: shoot -> UpdatePos(p, LS); DefKep
+	100-successful: tackled{danger = 3;} -> Skip
+};
+
+#define probFactor(rating, dist) rating + call(Pow, 2, 4 - dist);
+
+// currently only forwards move with dribbling, 
+//The closer to the goal, the higher the chance of scoring
+For(sp, lp, fi, ls, vo, hd, dr,lose, fouled, p) = [defKepPos[C] == 1 && distToKep[p] == 1]finish -> pcase {
+	call(probFactor, fi, distToKep[p]): shoot -> UpdatePos(p, FI); DefKep
+	lose: tackled{danger = 2;} -> Skip
+	fouled: foul -> AtkFreeKickFor
+} [] [defKepPos[C] == 1 && distToKep[p] > 1]longShot -> pcase {
+	call(probFactor, ls, distToKep[p]): shoot -> UpdatePos(p, LS); DefKep
+	lose: tackled{danger = 2;} -> Skip
+	fouled: foul -> AtkFreeKickFor
+} [] [defKepPos[C] == 1 && inAir == true]volley -> pcase {
+	call(probFactor, vo, distToKep[p]): shoot -> UpdatePos(p, VO); DefKep
+	lose: tackled{danger = 2;} -> Skip
+	fouled: foul -> AtkFreeKickFor
+} [] [defKepPos[C] == 1 && inAir == true]header -> pcase {
+	call(probFactor, hd, distToKep[p]): shoot -> UpdatePos(p, HD); DefKep
+	lose: tackled{danger = 2;} -> Skip
+	fouled: foul -> AtkFreeKickFor
+} [] [(defKepPos[C] == 1 && inAir == false) && distToKep[p] > 1]dribbling -> pcase {
+	dr: dribble -> UpdatePos(p, DR); UpdateForDistToKep(p); AtkFor
+	lose: tackled{danger = 2;} -> Skip
+	fouled: foul -> AtkFreeKickFor
+};
+
+FKFor(successful, p) = [defKepPos[C] == 1]finish -> pcase {
+	successful: shoot -> UpdatePos(p, FI); DefKep
+	100-successful: tackled{danger = 2;} -> Skip
+} [] [defKepPos[C] == 1]longShot -> pcase {
+	successful: shoot -> UpdatePos(p, LS); DefKep
+	100-successful: tackled{danger = 2;} -> Skip
+} [] [defKepPos[C] == 1 && inAir == true]volley -> pcase {
+	successful: shoot -> UpdatePos(p, VO); DefKep
+	100-successful: tackled{danger = 2;} -> Skip
+} [] [defKepPos[C] == 1 && inAir == true]header -> pcase {
+	successful: shoot -> UpdatePos(p, HD); DefKep
+	100-successful: tackled{danger = 2;} -> Skip
+};
+
+Kep_2(i, p) = attemptSave -> pcase {
+	i: save{danger = 1;} -> Skip
+	100-i: concede -> Skip
+};
+
+// type 1 is defender, 2 is defensive midfielder, 3 is midfielder, 4 is forward.
+// here assume each player can only pass either side or back pass for once.
+// pos is relative pos of each type of player in a row, counting from left to right.
+UpdateMem(type, player_pos) = case {
+	type == DEF: {memDef[player_pos] = 1} -> Skip
+		
+	type == MIDDEF: {memMidDef[player_pos] = 1} -> Skip
+	
+	type == MID: {memMid[player_pos] = 1} -> Skip
+	
+	type == MIDFOR: {memMidFor[player_pos] = 1} -> Skip
+
+	type == FOR: {memFor[player_pos] = 1} -> Skip
+};
+
+UpdateForDistToKep(player_pos) = {distToKep[player_pos]-- } -> Skip;
+// additional place for players to move (rest of the field)
+
+UpdatePos(p, e) = case {
+	p == L: 
+		case {
+			e == SP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			e == LP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
+			e == DR: {pos[L] = 1; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+		}
+	p == LR:
+		case {
+			e == SP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			e == LP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
+			e == DR: {pos[L] = 0; pos[LR] = 1; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+		}
+	p == CL: 
+		case {
+			e == SP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 1; pos[RL] = 0; pos[R] = 0;} -> Skip
+			e == LP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 1; pos[R] = 1;} -> Skip
+			e == DR: {pos[L] = 0; pos[LR] = 0; pos[CL] = 1; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+		}
+	p == C:
+		case {
+			e == SP: {pos[L] = 0; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 0;} -> Skip
+			e == LP: {pos[L] = 1; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 1;} -> Skip
+			e == DR: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+		}	
+	p == CR:
+		case {
+			e == SP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 1; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
+			e == LP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			e == DR: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 1; pos[RL] = 0; pos[R] = 0;} -> Skip
+			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+		}
+	p == RL:
+		case {
+			e == SP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
+			e == LP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			e == DR: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 1; pos[R] = 0;} -> Skip
+			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+		}
+	default:
+		case {
+			e == SP: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 1; pos[RL] = 1; pos[R] = 1;} -> Skip
+			e == LP: {pos[L] = 1; pos[LR] = 1; pos[CL] = 1; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+			e == DR: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 0; pos[CR] = 0; pos[RL] = 0; pos[R] = 1;} -> Skip
+			default: {pos[L] = 0; pos[LR] = 0; pos[CL] = 0; pos[C] = 1; pos[CR] = 0; pos[RL] = 0; pos[R] = 0;} -> Skip
+		}
+};
+
+#define Goal0 danger <= 0;
+#define Goal1 danger <= 1;
+#define Goal2 danger <= 2;
+#define Goal3 danger <= 3;
+#define Goal4 danger <= 4;
+#assert AtkKep deadlockfree;
+#assert AtkKep |= F G Goal0 with prob;
