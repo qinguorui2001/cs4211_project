@@ -37,8 +37,7 @@ engagement in any form of betting.
 
 ### Soccer
 Dataset + PAT Model Example:
-https://drive.google.com/drive/folders/1Bm_nnJALqkOZdt1MTwQJZORmZAt8xmZs?usp=sh
-aring
+https://drive.google.com/drive/folders/1Bm_nnJALqkOZdt1MTwQJZORmZAt8xmZs?usp=sharing
 
 A model similar to tennis was done for soccer (the example code for it is heavily
 commented). The probabilities for the actions each player can take were taken from the
