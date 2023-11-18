@@ -6,8 +6,8 @@ from openpyxl import Workbook
 import concurrent.futures
 import multiprocessing
 
-from MainFunctionsN import create_template_files, softmax
-
+#from MainFunctionsN import create_template_files, softmax
+from MainFunctionsNN import create_template_files, softmax
 def operation(file_name, season, dir_path, out_path, consolePath):
     print(f"running {season} {file_name}.")
     file_path = os.path.join(dir_path, file_name)
@@ -23,7 +23,7 @@ def operation(file_name, season, dir_path, out_path, consolePath):
 #Create probability for every season
 def readfile(season):
     consolePath = 'C:\\Program Files\\Process Analysis Toolkit\\Process Analysis Toolkit 3.5.1\\PAT3.Console.exe'
-    thisDirPath = 'C:\\Users\\nicky\\Desktop\\Project\\'
+    thisDirPath = 'C:\\Users\\nicky\\Desktop\\CS4211\\Project\\'
     
     #df_match = pd.read_csv(f"test/epl_matches_{season}.csv") #FOR TESTING. Use the test folder for testing particular cases. Make sure to use the right season in the excel file.
     df_match = pd.read_csv(f"matches/epl_matches_{season}.csv")
@@ -93,13 +93,14 @@ def readfile(season):
 
 if __name__ == "__main__":
     # seasons = [20152016,20162017]
-    #seasons = [20152016]
+    # seasons = [20152016]
     #seasons = [20162017]
     # seasons = [20172018]
     # seasons = [20182019]
     # seasons = [20192020]
     # seasons = [20202021]
-    seasons = [20162017,20172018,20182019,20192020,20202021]
+    seasons = [20152016,20162017,20172018,20182019,20192020,20202021]
+    #seasons = [20202021]
     for season in seasons:
         readfile(season)    
 
