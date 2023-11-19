@@ -113,8 +113,6 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
             
-            #TODO modify Goalkeeper ratings in pcsp file
-            #home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home)].values
             gk_home_ratings_row = df_ratings.loc[(lambda df: df['sofifa_id'] == int(float(goalkeeperIdHome)))].values            
             short_pass_rating = gk_home_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
             long_pass_rating = gk_home_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
@@ -483,20 +481,17 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             prob_to_lose_away_forwards, aggression_away_forwards = create_prob_to_lose(forwardIdsAway, df_ratings, away)
 
             # prob to lose calculated based on average of all midfielders
-            midfielderTotal = midfielderIdsAway.copy()
-            midfielderTotal.extend(midDefIdsAway)
-            midfielderTotal.extend(midForIdsAway)
-            prob_to_lose_away_midfielders, aggression_away_midfielders = create_prob_to_lose(midfielderTotal, df_ratings, away)
+
+            prob_to_lose_away_midfielders, aggression_away_midfielders = create_prob_to_lose(midfielderIdsAway, df_ratings, away)
             prob_to_lose_away_defenders, aggression_away_defenders = create_prob_to_lose(defenderIdsAway, df_ratings, away)
+            prob_to_lose_away_middeffielders,  aggression_away_middeffielders = create_prob_to_lose(midDefIdsAway, df_ratings, away)
+            prob_to_lose_away_midforfielders,  aggression_away_midforfielders = create_prob_to_lose(midForIdsAway, df_ratings, away)
 
             freekick_def_home = create_free_kick_rating(defenderIdsHome, df_ratings, home, rely_skills='skill_long_passing')
             freekick_mid_home = create_free_kick_rating(midfielderIdsHome, df_ratings, home, rely_skills='skill_fk_accuracy')
             freekick_for_home = create_free_kick_rating(forwardIdsHome, df_ratings, home, rely_skills='skill_fk_accuracy')
             freekick_middef_home = create_free_kick_rating(midfielderIdsHome, df_ratings, home, 'skill_long_passing')
             freekick_midfor_home = freekick_mid_home
-
-            prob_to_lose_away_middeffielders,  aggression_away_middeffielders = create_prob_to_lose(midfielderTotal, df_ratings, away)
-            prob_to_lose_away_midforfielders,  aggression_away_midforfielders = create_prob_to_lose(midfielderTotal, df_ratings, away)
             
             lines = modify_atkDef(home, lines, atk_def_line, atk_freekick_def_line, defenderPositionsHome, df_ratings, defenderIdsHome, prob_to_lose_away_forwards, aggression_away_forwards, freekick_def_home)
             lines = modify_atkMid(5, home, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsHome, df_ratings, midfielderIdsHome, prob_to_lose_away_midfielders, aggression_away_midfielders, freekick_mid_home)
@@ -623,7 +618,7 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             lines = modify_atkDef(home, lines, atk_def_line, atk_freekick_def_line, defenderPositionsHome, df_ratings, defenderIdsHome, prob_to_lose_away_forwards, aggression_away_forwards, freekick_def_home)
             lines = modify_atkMid(5, home, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsHome, df_ratings, midfielderIdsHome, prob_to_lose_away_midfielders, aggression_away_midfielders, freekick_mid_home)
             lines = modify_atkFor(5, home, lines, atk_for_line, atk_freekick_for_line, forwardPositionsHome, df_ratings, forwardIdsHome, prob_to_lose_away_defenders, aggression_away_defenders, freekick_for_home)
-            lines = modify_atkMidDef(home, lines, atk_middef_line, atk_freekick_middef_line, midDefPositionsHome, df_ratings, midDefIdsHome, prob_to_lose_away_midforfielders, aggression_away_midforfielders, freekick_middef_home)
+            lines = modify_atkMidDef(home, lines, atk_middef_line, atk_freekick_middef_line, midForPositionsHome, df_ratings, midDefIdsHome, prob_to_lose_away_midforfielders, aggression_away_midforfielders, freekick_middef_home)
             lines = modify_atkMidFor(home, lines, atk_midFor_line, atk_freekick_midFor_line, midForPositionsHome, df_ratings, midForIdsHome, prob_to_lose_away_middeffielders, aggression_away_middeffielders, freekick_midfor_home)
             # Open the file in write mode and write the modified content
             with open(out_file, 'w') as file:
@@ -643,14 +638,12 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             prob_to_lose_home_forwards, aggression_home_forwards = create_prob_to_lose(forwardIdsHome, df_ratings, home)
             
             # consider midfielders as whole to get prob to lose
-            midfielderTotal = midfielderIdsHome.copy()
-            midfielderTotal.extend(midDefIdsHome)
-            midfielderTotal.extend(midForIdsHome)
 
-            prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderTotal, df_ratings, home)
+
+            prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderIdsHome, df_ratings, home)
             prob_to_lose_home_defenders, aggression_home_defenders = create_prob_to_lose(defenderIdsHome, df_ratings, home)
-            prob_to_lose_home_middeffielders,  aggression_home_middeffielders = create_prob_to_lose(midfielderTotal, df_ratings, home)
-            prob_to_lose_home_midforfielders,  aggression_home_midforfielders = create_prob_to_lose(midfielderTotal, df_ratings, home)
+            prob_to_lose_home_middeffielders,  aggression_home_middeffielders = create_prob_to_lose(midDefIdsHome, df_ratings, home)
+            prob_to_lose_home_midforfielders,  aggression_home_midforfielders = create_prob_to_lose(midForIdsHome, df_ratings, home)
             
             freekick_def_away = create_free_kick_rating(defenderIdsAway, df_ratings, away, 'skill_long_passing')
             freekick_mid_away = create_free_kick_rating(midfielderIdsAway, df_ratings, away, 'skill_fk_accuracy')  
@@ -733,11 +726,9 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             prob_to_lose_away_forwards, aggression_away_forwards = create_prob_to_lose(forwardIdsAway, df_ratings, away)
 
             # prob to lose calculated based on average of midfielders + forMidfielders
-            midfielderTotal = midfielderIdsAway.copy()
-            midfielderTotal.extend(midForIdsAway)
-            prob_to_lose_away_midfielders, aggression_away_midfielders = create_prob_to_lose(midfielderTotal, df_ratings, away)
+            prob_to_lose_away_midfielders, aggression_away_midfielders = create_prob_to_lose(midfielderIdsAway, df_ratings, away)
             prob_to_lose_away_middeffielders, aggression_away_middeffielders = create_prob_to_lose(midDefIdsAway, df_ratings, away)
-            prob_to_lose_away_midforfielders, aggression_away_midforfielders = prob_to_lose_away_middeffielders, aggression_away_middeffielders
+            prob_to_lose_away_midforfielders, aggression_away_midforfielders = create_prob_to_lose(midForIdsAway, df_ratings, away)
             prob_to_lose_away_defenders, aggression_away_defenders = create_prob_to_lose(defenderIdsAway, df_ratings, away)
 
             freekick_def_home = create_free_kick_rating(defenderIdsHome, df_ratings, home, rely_skills='skill_long_passing')
@@ -894,13 +885,10 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             lines[def_kep_line] = f"DefKep = [pos[C] == 1]Kep_2({int(gk_handling_rating)}, C);\n"
 
             # consider midfielders as whole to get prob to lose
-            midfielderTotal = midfielderIdsHome.copy()
-            midfielderTotal.extend(midForIdsHome)
-
             prob_to_lose_home_forwards, aggression_home_forwards = create_prob_to_lose(forwardIdsHome, df_ratings, home)
-            prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderTotal, df_ratings, home)
+            prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderIdsHome, df_ratings, home)
             prob_to_lose_home_middeffielders,  aggression_home_middeffielders = create_prob_to_lose(midDefIdsHome, df_ratings, home)
-            prob_to_lose_home_midforfielders,  aggression_home_midforfielders = create_prob_to_lose(midfielderTotal, df_ratings, home)
+            prob_to_lose_home_midforfielders,  aggression_home_midforfielders = create_prob_to_lose(midForIdsHome, df_ratings, home)
             prob_to_lose_home_defenders, aggression_home_defenders = create_prob_to_lose(defenderIdsHome, df_ratings, home)
 
             freekick_def_away = create_free_kick_rating(defenderIdsAway, df_ratings, away, 'skill_long_passing')
@@ -952,6 +940,8 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
             
+            #TODO modify Goalkeeper ratings in pcsp file
+            #home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home)].value
             gk_home_ratings_row = df_ratings.loc[(lambda df: df['sofifa_id'] == int(float(goalkeeperIdHome)))].values
             short_pass_rating = gk_home_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
             long_pass_rating = gk_home_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
@@ -981,11 +971,9 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             prob_to_lose_away_forwards, aggression_away_forwards = create_prob_to_lose(forwardIdsAway, df_ratings, away)
 
             # prob to lose calculated based on average of all midfielders
-            midfielderTotal = midfielderIdsAway.copy()
-            midfielderTotal.extend(midDefIdsAway)
-            prob_to_lose_away_midfielders, aggression_away_midfielders = create_prob_to_lose(midfielderTotal, df_ratings, away)
+            prob_to_lose_away_midfielders, aggression_away_midfielders = create_prob_to_lose(midfielderIdsAway, df_ratings, away)
             prob_to_lose_away_defenders, aggression_away_defenders = create_prob_to_lose(defenderIdsAway, df_ratings, away)
-            prob_to_lose_away_middeffielders,  aggression_away_middeffielders = create_prob_to_lose(midfielderTotal, df_ratings, away)
+            prob_to_lose_away_middeffielders,  aggression_away_middeffielders = create_prob_to_lose(midDefIdsAway, df_ratings, away)
 
             freekick_def_home = create_free_kick_rating(defenderIdsHome, df_ratings, home, rely_skills='skill_long_passing')
             freekick_mid_home = create_free_kick_rating(midfielderIdsHome, df_ratings, home, rely_skills='skill_fk_accuracy')
@@ -995,7 +983,7 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             prob_to_lose_home_forwards, aggression_home_forwards = create_prob_to_lose(forwardIdsHome, df_ratings, home)
             prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderIdsHome, df_ratings, home)
             prob_to_lose_home_defenders, aggression_home_defenders = create_prob_to_lose(defenderIdsHome, df_ratings, home)
-            
+
 
             lines = modify_atkDef(home, lines, atk_def_line, atk_freekick_def_line, defenderPositionsHome, df_ratings, defenderIdsHome, prob_to_lose_away_forwards, aggression_away_forwards, freekick_def_home)
             lines = modify_atkMid(4, home, lines, atk_mid_line, atk_freekick_mid_line, midfielderPositionsHome, df_ratings, midfielderIdsHome, prob_to_lose_away_middeffielders, aggression_away_middeffielders, freekick_mid_home)
@@ -1072,7 +1060,10 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             # Modify the desired row and column
             #remember that we are reading from array and the numbers are the indexes of the array
             #and not the true columns and rows,so minus 1 from them
-
+            
+            #TODO modify Goalkeeper ratings in pcsp file
+            #home_ratings_row = df_ratings.loc[(df_ratings['club_name'] == home)].values
+        
             gk_home_ratings_row = df_ratings.loc[(lambda df: df['sofifa_id'] == int(float(goalkeeperIdHome)))].values
             short_pass_rating = gk_home_ratings_row[0][df_ratings.columns.get_loc('attacking_short_passing')]
             long_pass_rating = gk_home_ratings_row[0][df_ratings.columns.get_loc('skill_long_passing')]
@@ -1139,12 +1130,10 @@ def create_template_files(df_match, df_ratings,season, template_file_3f,template
             prob_to_lose_home_forwards, aggression_home_forwards = create_prob_to_lose(forwardIdsHome, df_ratings, home)
             
             # consider midfielders as whole to get prob to lose
-            midfielderTotal = midfielderIdsHome.copy()
-            midfielderTotal.extend(midDefIdsHome)
 
-            prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderTotal, df_ratings, home)
+            prob_to_lose_home_midfielders, aggression_home_midfielders = create_prob_to_lose(midfielderIdsHome, df_ratings, home)
             prob_to_lose_home_defenders, aggression_home_defenders = create_prob_to_lose(defenderIdsHome, df_ratings, home)
-            prob_to_lose_home_middeffielders,  aggression_home_middeffielders = create_prob_to_lose(midfielderTotal, df_ratings, home)
+            prob_to_lose_home_middeffielders,  aggression_home_middeffielders = create_prob_to_lose(midDefIdsHome, df_ratings, home)
 
             
             freekick_def_away = create_free_kick_rating(defenderIdsAway, df_ratings, away, 'skill_long_passing')
